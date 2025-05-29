@@ -5,6 +5,7 @@
 package Client;
 import java.net.Socket;
 import java.io.IOException;
+import javax.swing.UIManager;
 /**
  *
  * @author Admin
@@ -13,7 +14,9 @@ public class Client extends javax.swing.JFrame {
 
     /**
      * Creates new form Client
+     * 
      */
+    private java.net.Socket socket;
     public Client() {
         initComponents();
     }
@@ -27,13 +30,18 @@ public class Client extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jTextField1 = new javax.swing.JTextField();
+        jPortField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jPortButton = new javax.swing.JButton();
+        jConnectButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jNoficationArea = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
+        jServerIPField = new javax.swing.JTextField();
+        jLabel4 = new javax.swing.JLabel();
+        jDisconnectButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jItemArea = new javax.swing.JTextArea();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -51,31 +59,47 @@ public class Client extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        jPortField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                jPortFieldActionPerformed(evt);
             }
-
         });
 
-        jLabel2.setText("Enter port");
+        jLabel2.setText("Enter port :");
 
-        jPortButton.setText("Connect");
-        jPortButton.addActionListener(new java.awt.event.ActionListener() {
+        jConnectButton.setText("Connect");
+        jConnectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPortButtonActionPerformed(evt);
+                jConnectButtonActionPerformed(evt);
             }
-
-            
         });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jNoficationArea.setColumns(20);
+        jNoficationArea.setRows(5);
+        jScrollPane1.setViewportView(jNoficationArea);
 
         jLabel3.setText("List:");
 
         jLabel1.setText("Client");
+
+        jServerIPField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jServerIPFieldActionPerformed(evt);
+            }
+        });
+
+        jLabel4.setText("Enter Server IP :");
+
+        jDisconnectButton.setText("Disconnect");
+        jDisconnectButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jDisconnectButtonActionPerformed(evt);
+            }
+        });
+
+        jItemArea.setColumns(20);
+        jItemArea.setRows(5);
+        jScrollPane2.setViewportView(jItemArea);
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -149,17 +173,27 @@ public class Client extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPortButton))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(11, 11, 11)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(jLabel4)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jServerIPField))
+                                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                                            .addComponent(jLabel2)
+                                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                            .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jConnectButton)
+                                    .addComponent(jDisconnectButton)))
                             .addComponent(jLabel3)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(12, Short.MAX_VALUE))
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addContainerGap(110, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -168,14 +202,23 @@ public class Client extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(jPortButton))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
+                    .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jServerIPField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4))
+                    .addComponent(jConnectButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jDisconnectButton)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
         );
 
         pack();
@@ -185,25 +228,51 @@ public class Client extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void jPortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPortFieldActionPerformed
         // TODO add your handling code here:
         
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_jPortFieldActionPerformed
 
-    private void jPortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPortButtonActionPerformed
+    private void jConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectButtonActionPerformed
         // TODO add your handling code here:
-        String portText = jTextField1.getText();
+        String portText = jPortField.getText();
+        String ipText = jServerIPField.getText();
         try {
             int port = Integer.parseInt(portText);
-            java.net.Socket socket = new java.net.Socket("localhost", port);
-            jTextArea1.append("Connected to localhost:" + port + "\n");
-            // Bạn có thể lưu socket vào biến thành viên để sử dụng tiếp
+            java.net.Socket socket = new java.net.Socket(ipText, port);
+            jNoficationArea.append("Connected to "+ ipText+ " : " + port + "\n");
+
+            // Nhận danh sách file từ server
+            java.io.InputStream is = socket.getInputStream();
+            java.util.Scanner scanner = new java.util.Scanner(is).useDelimiter("\\A");
+            String fileList = scanner.hasNext() ? scanner.next() : "";
+            jItemArea.setText(fileList);
+
+            // socket.close(); // Đóng nếu chỉ nhận 1 lần
         } catch (NumberFormatException ex) {
-            jTextArea1.append("Invalid port number!\n");
+            jNoficationArea.append("Invalid port number!\n");
         } catch (java.io.IOException ex) {
-            jTextArea1.append("Could not connect to localhost:" + portText + "\n");
+            jNoficationArea.append("Could not connect to " + ipText + ":" + portText + "\n");
         }
-    }//GEN-LAST:event_jPortButtonActionPerformed
+    }//GEN-LAST:event_jConnectButtonActionPerformed
+
+    private void jServerIPFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jServerIPFieldActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jServerIPFieldActionPerformed
+
+    private void jDisconnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDisconnectButtonActionPerformed
+        // TODO add your handling code here:
+        if (socket != null && !socket.isClosed()) {
+            try {
+                socket.close();
+                jNoficationArea.append("Disconnected from server.\n");
+            } catch (java.io.IOException ex) {
+                jNoficationArea.append("Error when disconnecting.\n");
+            }
+        } else {
+            jNoficationArea.append("No connection to disconnect.\n");
+        }
+    }//GEN-LAST:event_jDisconnectButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -233,6 +302,12 @@ public class Client extends javax.swing.JFrame {
         //</editor-fold>
 
         /* Create and display the form */
+        try{
+            UIManager.setLookAndFeel(
+                UIManager.getSystemLookAndFeelClassName());
+        }catch(Exception e){
+            
+        }
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new Client().setVisible(true);
@@ -250,13 +325,18 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JButton jConnectButton;
+    private javax.swing.JButton jDisconnectButton;
+    private javax.swing.JTextArea jItemArea;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JButton jPortButton;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JTextArea jNoficationArea;
+    private javax.swing.JTextField jPortField;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JTextField jServerIPField;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem pasteMenuItem;

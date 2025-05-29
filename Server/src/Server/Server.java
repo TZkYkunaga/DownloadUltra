@@ -7,7 +7,7 @@ package Server;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
-
+import javax.swing.UIManager;
 /**
  *
  * @author Admin
@@ -19,6 +19,19 @@ public class Server extends javax.swing.JFrame {
      */
     public Server() {
         initComponents();
+        java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
+        if (assetsDir.exists() && assetsDir.isDirectory()) {
+            String[] files = assetsDir.list();
+            if (files != null) {
+                StringBuilder sb = new StringBuilder();
+                for (String file : files) {
+                    sb.append(file).append("\n");
+                }
+                jItemArea.setText(sb.toString());
+            }
+        } else {
+            jItemArea.setText("No files are available.");
+        }
     }
 
     /**
@@ -31,12 +44,15 @@ public class Server extends javax.swing.JFrame {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        jPortField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
         jPortButton = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTextArea1 = new javax.swing.JTextArea();
+        jNoficationArea = new javax.swing.JTextArea();
         jLabel3 = new javax.swing.JLabel();
+        jAddButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jItemArea = new javax.swing.JTextArea();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -56,9 +72,9 @@ public class Server extends javax.swing.JFrame {
 
         jLabel1.setText("Máy Chủ");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        jPortField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                jPortFieldActionPerformed(evt);
             }
         });
 
@@ -71,11 +87,22 @@ public class Server extends javax.swing.JFrame {
             }
         });
 
-        jTextArea1.setColumns(20);
-        jTextArea1.setRows(5);
-        jScrollPane1.setViewportView(jTextArea1);
+        jNoficationArea.setColumns(20);
+        jNoficationArea.setRows(5);
+        jScrollPane1.setViewportView(jNoficationArea);
 
         jLabel3.setText("List:");
+
+        jAddButton.setText("Add +");
+        jAddButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jAddButtonActionPerformed(evt);
+            }
+        });
+
+        jItemArea.setColumns(20);
+        jItemArea.setRows(5);
+        jScrollPane2.setViewportView(jItemArea);
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -151,15 +178,20 @@ public class Server extends javax.swing.JFrame {
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPortButton))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel3)
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 371, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(49, Short.MAX_VALUE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jPortButton))))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(23, 23, 23)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addGap(356, 356, 356)
+                        .addComponent(jAddButton))
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -168,14 +200,18 @@ public class Server extends javax.swing.JFrame {
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2)
                     .addComponent(jPortButton))
-                .addGap(18, 18, 18)
-                .addComponent(jLabel3)
+                .addGap(5, 5, 5)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(13, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jAddButton, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel3))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 229, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(17, Short.MAX_VALUE))
         );
 
         pack();
@@ -185,27 +221,47 @@ public class Server extends javax.swing.JFrame {
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void jPortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPortFieldActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_jPortFieldActionPerformed
 
     private void jPortButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPortButtonActionPerformed
         // TODO add your handling code here:
-        String portText = jTextField1.getText();
+        String portText = jPortField.getText();
         try {
             int port = Integer.parseInt(portText);
             ServerSocket serverSocket = new ServerSocket(port);
-            jTextArea1.append("Server is listening on port: " + port + "\n");
+            jNoficationArea.append("Server is listening on port: " + port + "\n");
             // Chấp nhận kết nối client (nên chạy ở thread riêng nếu muốn chấp nhận nhiều client)
             Socket clientSocket = serverSocket.accept();
-            jTextArea1.append("Client connected: " + clientSocket.getInetAddress() + "\n");
-            // Có thể lưu serverSocket và clientSocket vào biến thành viên để sử dụng tiếp
+            jNoficationArea.append("Client connected: " + clientSocket.getInetAddress() + "\n");
+
+            // Gửi danh sách file cho client
+            java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
+            String[] files = assetsDir.list();
+            StringBuilder sb = new StringBuilder();
+            if (files != null) {
+                for (String file : files) {
+                    sb.append(file).append("\n");
+                }
+            }
+            java.io.OutputStream os = clientSocket.getOutputStream();
+            os.write(sb.toString().getBytes());
+            os.flush();
+            os.close(); // Đóng output stream
+            clientSocket.close(); // Đóng socket client
+            serverSocket.close(); // Đóng server socket nếu chỉ phục vụ 1 client
+
         } catch (NumberFormatException ex) {
-            jTextArea1.append("Invalid port number!\n");
+            jNoficationArea.append("Invalid port number!\n");
         } catch (IOException ex) {
-            jTextArea1.append("Could not listen on port: " + portText + "\n");
+            jNoficationArea.append("Could not listen on port: " + portText + "\n");
         }
     }//GEN-LAST:event_jPortButtonActionPerformed
+
+    private void jAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAddButtonActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jAddButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -216,22 +272,13 @@ public class Server extends javax.swing.JFrame {
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(Server.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        try{
+            UIManager.setLookAndFeel(
+                UIManager.getSystemLookAndFeelClassName());
+        }catch(Exception e){
+            
         }
+        
         //</editor-fold>
 
         /* Create and display the form */
@@ -252,13 +299,16 @@ public class Server extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
+    private javax.swing.JButton jAddButton;
+    private javax.swing.JTextArea jItemArea;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
+    private javax.swing.JTextArea jNoficationArea;
     private javax.swing.JButton jPortButton;
+    private javax.swing.JTextField jPortField;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTextArea jTextArea1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem pasteMenuItem;
