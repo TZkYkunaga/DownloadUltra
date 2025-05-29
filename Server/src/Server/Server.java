@@ -89,6 +89,7 @@ public class Server extends javax.swing.JFrame {
         });
 
         jNoficationArea.setColumns(20);
+        jNoficationArea.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
         jNoficationArea.setRows(5);
         jScrollPane1.setViewportView(jNoficationArea);
 
@@ -102,11 +103,6 @@ public class Server extends javax.swing.JFrame {
             }
         });
 
-        jItemList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
         jScrollPane3.setViewportView(jItemList);
 
         jRemoveButton.setText("Remove");
@@ -184,53 +180,51 @@ public class Server extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel2)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 330, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jPortButton))))))
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jPortButton)
+                        .addGap(69, 69, 69)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(14, 14, 14)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 322, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jRemoveButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jAddButton))
-                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(104, Short.MAX_VALUE))
+                        .addComponent(jLabel3)
+                        .addGap(141, 141, 141)
+                        .addComponent(jRemoveButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jAddButton)))
+                .addGap(305, 305, 305))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel2)
-                    .addComponent(jPortButton))
-                .addGap(5, 5, 5)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jAddButton)
-                        .addComponent(jRemoveButton))
-                    .addComponent(jLabel3, javax.swing.GroupLayout.Alignment.TRAILING))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2)
+                            .addComponent(jPortButton))
+                        .addGap(70, 70, 70)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel3)
+                            .addComponent(jRemoveButton)
+                            .addComponent(jAddButton))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         pack();
@@ -254,63 +248,69 @@ public class Server extends javax.swing.JFrame {
                 jNoficationArea.append("Server is listening on port: " + port + "\n");
 
                 // Chạy server ở thread riêng để không block giao diện
-                new Thread(() -> {
-                    while (true) {
-                        try {
-                            Socket clientSocket = serverSocket.accept();
-                            // Xử lý mỗi client ở thread riêng
-                            new Thread(() -> {
-                                try {
-                                    java.io.InputStream in = clientSocket.getInputStream();
-                                    java.io.OutputStream out = clientSocket.getOutputStream();
+                // ...existing code...
+new Thread(() -> {
+    while (true) {
+        try {
+            Socket clientSocket = serverSocket.accept();
+            // LẤY ĐỊA CHỈ IP CLIENT VÀ HIỂN THỊ LÊN jNoficationArea
+            String clientIP = clientSocket.getInetAddress().getHostAddress();
+            jNoficationArea.append("Client connected: " + clientIP + "\n");
 
-                                    // Đọc thử xem client gửi gì (nếu gửi tên file thì gửi file, nếu không thì gửi danh sách file)
-                                    clientSocket.setSoTimeout(200); // timeout nhỏ để thử đọc
-                                    byte[] buf = new byte[1024];
-                                    int len = -1;
-                                    try {
-                                        len = in.read(buf);
-                                    } catch (Exception e) { /* timeout */ }
+            // Xử lý mỗi client ở thread riêng
+            new Thread(() -> {
+                try {
+                    java.io.InputStream in = clientSocket.getInputStream();
+                    java.io.OutputStream out = clientSocket.getOutputStream();
 
-                                    if (len <= 0) {
-                                        // Không gửi gì, gửi danh sách file
-                                        java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
-                                        String[] files = assetsDir.list();
-                                        StringBuilder sb = new StringBuilder();
-                                        if (files != null) {
-                                            for (String file : files) {
-                                                sb.append(file).append("\n");
-                                            }
-                                        }
-                                        out.write(sb.toString().getBytes());
-                                        out.flush();
-                                    } else {
-                                        // Gửi file
-                                        String fileName = new String(buf, 0, len).trim();
-                                        java.io.File file = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", fileName);
-                                        if (file.exists()) {
-                                            java.io.FileInputStream fis = new java.io.FileInputStream(file);
-                                            byte[] fileBuf = new byte[4096];
-                                            int bytesRead;
-                                            while ((bytesRead = fis.read(fileBuf)) != -1) {
-                                                out.write(fileBuf, 0, bytesRead);
-                                            }
-                                            fis.close();
-                                        }
-                                        out.flush();
-                                    }
-                                    out.close();
-                                    in.close();
-                                    clientSocket.close();
-                                } catch (Exception ex) {
-                                    // Xử lý lỗi nếu cần
-                                }
-                            }).start();
-                        } catch (IOException ex) {
+                    // Đọc thử xem client gửi gì (nếu gửi tên file thì gửi file, nếu không thì gửi danh sách file)
+                    clientSocket.setSoTimeout(200); // timeout nhỏ để thử đọc
+                    byte[] buf = new byte[1024];
+                    int len = -1;
+                    try {
+                        len = in.read(buf);
+                    } catch (Exception e) { /* timeout */ }
+
+                    if (len <= 0) {
+                        // Không gửi gì, gửi danh sách file
+                        java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
+                        String[] files = assetsDir.list();
+                        StringBuilder sb = new StringBuilder();
+                        if (files != null) {
+                            for (String file : files) {
+                                sb.append(file).append("\n");
+                            }
+                        }
+                        out.write(sb.toString().getBytes());
+                        out.flush();
+                    } else {
+                        // Gửi file
+                        String fileName = new String(buf, 0, len).trim();
+                        java.io.File file = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", fileName);
+                        if (file.exists()) {
+                            java.io.FileInputStream fis = new java.io.FileInputStream(file);
+                            byte[] fileBuf = new byte[4096];
+                            int bytesRead;
+                            while ((bytesRead = fis.read(fileBuf)) != -1) {
+                                out.write(fileBuf, 0, bytesRead);
+                            }
+                            fis.close();
+                        }
+                        out.flush();
+                    }
+                    out.close();
+                    in.close();
+                    clientSocket.close();
+                        } catch (Exception ex) {
                             // Xử lý lỗi nếu cần
                         }
+                    }).start();
+                    } catch (IOException ex) {
+                        // Xử lý lỗi nếu cần
                     }
-                }).start();
+                }
+            }).start();
+
 
             } catch (NumberFormatException ex) {
                 jNoficationArea.append("Invalid port number!\n");
