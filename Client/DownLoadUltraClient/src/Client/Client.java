@@ -40,8 +40,9 @@ public class Client extends javax.swing.JFrame {
         jServerIPField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
         jDisconnectButton = new javax.swing.JButton();
-        jScrollPane2 = new javax.swing.JScrollPane();
-        jItemArea = new javax.swing.JTextArea();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        jItemList = new javax.swing.JList<>();
+        jDownloadButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         openMenuItem = new javax.swing.JMenuItem();
@@ -78,6 +79,7 @@ public class Client extends javax.swing.JFrame {
         jNoficationArea.setRows(5);
         jScrollPane1.setViewportView(jNoficationArea);
 
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
         jLabel3.setText("List:");
 
         jLabel1.setText("Client");
@@ -97,9 +99,19 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        jItemArea.setColumns(20);
-        jItemArea.setRows(5);
-        jScrollPane2.setViewportView(jItemArea);
+        jItemList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(jItemList);
+
+        jDownloadButton.setText("Download");
+        jDownloadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jDownloadButtonActionPerformed(evt);
+            }
+        });
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
@@ -169,11 +181,12 @@ public class Client extends javax.swing.JFrame {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(11, 11, 11)
+                        .addContainerGap()
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addContainerGap(26, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -187,13 +200,17 @@ public class Client extends javax.swing.JFrame {
                                             .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                             .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jConnectButton)
                                     .addComponent(jDisconnectButton)))
-                            .addComponent(jLabel3)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                .addContainerGap(110, Short.MAX_VALUE))
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel3)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(jDownloadButton))
+                                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 581, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(232, 232, 232)))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -212,13 +229,15 @@ public class Client extends javax.swing.JFrame {
                     .addComponent(jConnectButton))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jDisconnectButton)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 13, Short.MAX_VALUE)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jDisconnectButton))
+                .addGap(30, 30, 30)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jDownloadButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(311, Short.MAX_VALUE))
         );
 
         pack();
@@ -239,16 +258,26 @@ public class Client extends javax.swing.JFrame {
         String ipText = jServerIPField.getText();
         try {
             int port = Integer.parseInt(portText);
-            java.net.Socket socket = new java.net.Socket(ipText, port);
+            socket = new java.net.Socket(ipText, port);
             jNoficationArea.append("Connected to "+ ipText+ " : " + port + "\n");
 
             // Nhận danh sách file từ server
             java.io.InputStream is = socket.getInputStream();
             java.util.Scanner scanner = new java.util.Scanner(is).useDelimiter("\\A");
             String fileList = scanner.hasNext() ? scanner.next() : "";
-            jItemArea.setText(fileList);
 
-            // socket.close(); // Đóng nếu chỉ nhận 1 lần
+            // Hiển thị lên jItemList thay vì jItemArea
+            javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
+            for (String file : fileList.split("\\r?\\n")) {
+                if (!file.trim().isEmpty()) {
+                    model.addElement(file);
+                }
+            }
+            jItemList.setModel(model);
+
+            // Nếu vẫn muốn hiển thị text, có thể giữ lại dòng này:
+            // jItemArea.setText(fileList);
+
         } catch (NumberFormatException ex) {
             jNoficationArea.append("Invalid port number!\n");
         } catch (java.io.IOException ex) {
@@ -273,6 +302,56 @@ public class Client extends javax.swing.JFrame {
             jNoficationArea.append("No connection to disconnect.\n");
         }
     }//GEN-LAST:event_jDisconnectButtonActionPerformed
+
+    private void jDownloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDownloadButtonActionPerformed
+        // TODO add your handling code here:private void jDownloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDownloadButtonActionPerformed
+        // Lấy file được chọn
+           String selectedFile = jItemList.getSelectedValue();
+    if (selectedFile == null) {
+        jNoficationArea.append("Please select a file to download.\n");
+        return;
+    }
+
+    javax.swing.JFileChooser chooser = new javax.swing.JFileChooser();
+    chooser.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
+    int result = chooser.showSaveDialog(this);
+    if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+        java.io.File selectedDir = chooser.getSelectedFile();
+        java.io.File saveFile = new java.io.File(selectedDir, selectedFile);
+
+            try {
+                // Gửi yêu cầu tên file tới server (tạo kết nối mới)
+                String ipText = jServerIPField.getText();
+                int port = Integer.parseInt(jPortField.getText());
+                Socket downloadSocket = new Socket(ipText, port);
+
+                // Gửi tên file
+                java.io.OutputStream out = downloadSocket.getOutputStream();
+                out.write((selectedFile + "\n").getBytes());
+                out.flush();
+
+                // Nhận dữ liệu file
+                java.io.InputStream in = downloadSocket.getInputStream();
+                java.io.FileOutputStream fos = new java.io.FileOutputStream(saveFile);
+
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
+
+                fos.close();
+                in.close();
+                out.close();
+                downloadSocket.close();
+
+                jNoficationArea.append("Đã tải xong file: " + selectedFile + "\n");
+            } catch (Exception ex) {
+                jNoficationArea.append("Lỗi khi tải file: " + ex.getMessage() + "\n");
+            }
+        }
+    }//GEN-LAST:event_jDownloadButtonActionPerformed
+
 
     /**
      * @param args the command line arguments
@@ -327,7 +406,8 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jConnectButton;
     private javax.swing.JButton jDisconnectButton;
-    private javax.swing.JTextArea jItemArea;
+    private javax.swing.JButton jDownloadButton;
+    private javax.swing.JList<String> jItemList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -335,7 +415,7 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JTextArea jNoficationArea;
     private javax.swing.JTextField jPortField;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jServerIPField;
     private javax.swing.JMenuBar menuBar;
     private javax.swing.JMenuItem openMenuItem;
