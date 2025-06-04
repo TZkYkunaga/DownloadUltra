@@ -32,6 +32,7 @@ public class Server extends javax.swing.JFrame {
         } else {
             jItemList.setModel(new javax.swing.DefaultListModel<>()); // Xóa danh sách nếu không có file
         }
+        new javax.swing.Timer(5000, e -> updateAssetList()).start();
     }
 
     /**
@@ -97,6 +98,7 @@ public class Server extends javax.swing.JFrame {
         jLabel3.setText("List:");
 
         jAddButton.setText("Add");
+        jAddButton.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
         jAddButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jAddButtonActionPerformed(evt);
@@ -207,7 +209,7 @@ public class Server extends javax.swing.JFrame {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -223,12 +225,22 @@ public class Server extends javax.swing.JFrame {
                             .addComponent(jAddButton))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(46, Short.MAX_VALUE))
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+    private void updateAssetList() {
+    java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
+    String[] files = assetsDir.list();
+    javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
+    if (files != null) {
+        for (String file : files) {
+            model.addElement(file);
+        }
+    }
+    jItemList.setModel(model);
+}
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
@@ -249,67 +261,94 @@ public class Server extends javax.swing.JFrame {
 
                 // Chạy server ở thread riêng để không block giao diện
                 // ...existing code...
-new Thread(() -> {
-    while (true) {
-        try {
-            Socket clientSocket = serverSocket.accept();
-            // LẤY ĐỊA CHỈ IP CLIENT VÀ HIỂN THỊ LÊN jNoficationArea
-            String clientIP = clientSocket.getInetAddress().getHostAddress();
-            jNoficationArea.append("Client connected: " + clientIP + "\n");
-
-            // Xử lý mỗi client ở thread riêng
             new Thread(() -> {
-                try {
-                    java.io.InputStream in = clientSocket.getInputStream();
-                    java.io.OutputStream out = clientSocket.getOutputStream();
-
-                    // Đọc thử xem client gửi gì (nếu gửi tên file thì gửi file, nếu không thì gửi danh sách file)
-                    clientSocket.setSoTimeout(200); // timeout nhỏ để thử đọc
-                    byte[] buf = new byte[1024];
-                    int len = -1;
+                while (true) {
                     try {
-                        len = in.read(buf);
-                    } catch (Exception e) { /* timeout */ }
+                        Socket clientSocket = serverSocket.accept();
+                        // LẤY ĐỊA CHỈ IP CLIENT VÀ HIỂN THỊ LÊN jNoficationArea
+                        String clientIP = clientSocket.getInetAddress().getHostAddress();
+                        jNoficationArea.append("Client connected: " + clientIP + "\n");
 
-                    if (len <= 0) {
-                        // Không gửi gì, gửi danh sách file
-                        java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
-                        String[] files = assetsDir.list();
-                        StringBuilder sb = new StringBuilder();
-                        if (files != null) {
-                            for (String file : files) {
-                                sb.append(file).append("\n");
+                        // Xử lý mỗi client ở thread riêng
+                        new Thread(() -> {
+                            try {
+                                java.io.InputStream in = clientSocket.getInputStream();
+                                java.io.OutputStream out = clientSocket.getOutputStream();
+
+                                // Đọc thử xem client gửi gì (nếu gửi tên file thì gửi file, nếu không thì gửi danh sách file)
+                                clientSocket.setSoTimeout(200); // timeout nhỏ để thử đọc
+                                byte[] buf = new byte[1024];
+                                int len = -1;
+                                try {
+                                    len = in.read(buf);
+                                } catch (Exception e) { /* timeout */ }
+
+                                if (len <= 0) {
+                                    // Không gửi gì, gửi danh sách file
+                                    java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
+                                    String[] files = assetsDir.list();
+                                    StringBuilder sb = new StringBuilder();
+                                    if (files != null) {
+                                        for (String file : files) {
+                                            sb.append(file).append("\n");
+                                        }
+                                    }
+                                    out.write(sb.toString().getBytes());
+                                    out.flush();
+                                } else {
+                                    // Nhận yêu cầu: có thể là "filename" hoặc "filename|start|end"
+                                    String request = new String(buf, 0, len).trim();
+                                    String[] parts = request.split("\\|");
+                                    String fileName = parts[0];
+                                    java.io.File file = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", fileName);
+
+                                    if (file.exists()) {
+                                        long fileLength = file.length();
+                                        long start = 0;
+                                        long end = fileLength - 1;
+                                        if (parts.length == 3) {
+                                            try {
+                                                start = Long.parseLong(parts[1]);
+                                                end = Long.parseLong(parts[2]);
+                                                if (start < 0) start = 0;
+                                                if (end >= fileLength) end = fileLength - 1;
+                                            } catch (Exception e) {
+                                                // Nếu lỗi, giữ mặc định start=0, end=fileLength-1
+                                            }
+                                        }
+
+                                        // Gửi kích thước phần sẽ gửi (end - start + 1)
+                                        out.write(((end - start + 1) + "\n").getBytes());
+                                        out.flush();
+
+                                        // Gửi dữ liệu từ byte start đến end
+                                        try (java.io.RandomAccessFile raf = new java.io.RandomAccessFile(file, "r")) {
+                                            raf.seek(start);
+                                            byte[] buffer = new byte[4096];
+                                            long bytesToSend = end - start + 1;
+                                            while (bytesToSend > 0) {
+                                                int bytesRead = raf.read(buffer, 0, (int)Math.min(buffer.length, bytesToSend));
+                                                if (bytesRead == -1) break;
+                                                out.write(buffer, 0, bytesRead);
+                                                bytesToSend -= bytesRead;
+                                            }
+                                        }
+                                    }
+                                    out.flush();
+                                }
+                                out.close();
+                                in.close();
+                                clientSocket.close();
+                                    } catch (Exception ex) {
+                                        // Xử lý lỗi nếu cần
+                                    }
+                                }).start();
+                                } catch (IOException ex) {
+                                    // Xử lý lỗi nếu cần
+                                }
                             }
                         }
-                        out.write(sb.toString().getBytes());
-                        out.flush();
-                    } else {
-                        // Gửi file
-                        String fileName = new String(buf, 0, len).trim();
-                        java.io.File file = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", fileName);
-                        if (file.exists()) {
-                            java.io.FileInputStream fis = new java.io.FileInputStream(file);
-                            byte[] fileBuf = new byte[4096];
-                            int bytesRead;
-                            while ((bytesRead = fis.read(fileBuf)) != -1) {
-                                out.write(fileBuf, 0, bytesRead);
-                            }
-                            fis.close();
-                        }
-                        out.flush();
-                    }
-                    out.close();
-                    in.close();
-                    clientSocket.close();
-                        } catch (Exception ex) {
-                            // Xử lý lỗi nếu cần
-                        }
-                    }).start();
-                    } catch (IOException ex) {
-                        // Xử lý lỗi nếu cần
-                    }
-                }
-            }).start();
+                    ).start();
 
 
             } catch (NumberFormatException ex) {
@@ -321,10 +360,45 @@ new Thread(() -> {
 
     private void jAddButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jAddButtonActionPerformed
         // TODO add your handling code here:
+        javax.swing.JFileChooser chooser = new javax.swing.JFileChooser();
+        int result = chooser.showOpenDialog(this);
+        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File selectedFile = chooser.getSelectedFile();
+            java.io.File destFile = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", selectedFile.getName());
+            try (java.io.FileInputStream fis = new java.io.FileInputStream(selectedFile);
+                java.io.FileOutputStream fos = new java.io.FileOutputStream(destFile)) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = fis.read(buffer)) != -1) {
+                    fos.write(buffer, 0, bytesRead);
+                }
+                jNoficationArea.append("Đã thêm file: " + selectedFile.getName() + "\n");
+                // Cập nhật lại danh sách
+                updateAssetList();
+            } catch (Exception ex) {
+                jNoficationArea.append("Không thể thêm file: " + ex.getMessage() + "\n");
+            }
+        }
     }//GEN-LAST:event_jAddButtonActionPerformed
 
     private void jRemoveButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jRemoveButtonActionPerformed
-        // TODO add your handling code here:
+        java.util.List<String> selectedFiles = jItemList.getSelectedValuesList();
+        if (selectedFiles == null || selectedFiles.isEmpty()) {
+            jNoficationArea.append("Vui lòng chọn file để xóa!\n");
+            return;
+        }
+        int deleted = 0;
+        for (String selectedFile : selectedFiles) {
+            java.io.File file = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", selectedFile);
+            if (file.exists() && file.delete()) {
+                deleted++;
+                jNoficationArea.append("Đã xóa file: " + selectedFile + "\n");
+            } else {
+                jNoficationArea.append("Không thể xóa file: " + selectedFile + "\n");
+            }
+        }
+        // Cập nhật lại danh sách nếu có file bị xóa
+        if (deleted > 0) updateAssetList();
     }//GEN-LAST:event_jRemoveButtonActionPerformed
 
     /**

@@ -17,6 +17,7 @@ public class Client extends javax.swing.JFrame {
      * 
      */
     private java.net.Socket socket;
+    private javax.swing.Timer refreshTimer;
     public Client() {
         initComponents();
     }
@@ -57,7 +58,7 @@ public class Client extends javax.swing.JFrame {
         helpMenu = new javax.swing.JMenu();
         contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
-
+        jItemList.setSelectionMode(javax.swing.ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
@@ -247,6 +248,31 @@ public class Client extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+     private void refreshFileListFromServer() {
+        String portText = jPortField.getText();
+        String ipText = jServerIPField.getText();
+        try {
+            int port = Integer.parseInt(portText);
+            Socket tempSocket = new Socket(ipText, port);
+
+            java.io.InputStream is = tempSocket.getInputStream();
+            java.util.Scanner scanner = new java.util.Scanner(is).useDelimiter("\\A");
+            String fileList = scanner.hasNext() ? scanner.next() : "";
+
+            javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
+            for (String file : fileList.split("\\r?\\n")) {
+                if (!file.trim().isEmpty()) {
+                    model.addElement(file);
+                }
+            }
+            jItemList.setModel(model);
+
+            tempSocket.close();
+        } catch (Exception ex) {
+            // Có thể bỏ qua lỗi nếu server chưa mở hoặc mất kết nối
+        }
+    }
+
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
@@ -258,7 +284,7 @@ public class Client extends javax.swing.JFrame {
 
     private void jConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectButtonActionPerformed
         // TODO add your handling code here:
-        String portText = jPortField.getText();
+         String portText = jPortField.getText();
         String ipText = jServerIPField.getText();
         try {
             int port = Integer.parseInt(portText);
@@ -270,7 +296,6 @@ public class Client extends javax.swing.JFrame {
             java.util.Scanner scanner = new java.util.Scanner(is).useDelimiter("\\A");
             String fileList = scanner.hasNext() ? scanner.next() : "";
 
-            // Hiển thị lên jItemList thay vì jItemArea
             javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
             for (String file : fileList.split("\\r?\\n")) {
                 if (!file.trim().isEmpty()) {
@@ -279,8 +304,10 @@ public class Client extends javax.swing.JFrame {
             }
             jItemList.setModel(model);
 
-            // Nếu vẫn muốn hiển thị text, có thể giữ lại dòng này:
-            // jItemArea.setText(fileList);
+            // Bắt đầu tự động refresh danh sách file mỗi 5 giây
+            if (refreshTimer != null) refreshTimer.stop();
+            refreshTimer = new javax.swing.Timer(5000, e -> refreshFileListFromServer());
+            refreshTimer.start();
 
         } catch (NumberFormatException ex) {
             jNoficationArea.append("Invalid port number!\n");
@@ -305,53 +332,86 @@ public class Client extends javax.swing.JFrame {
         } else {
             jNoficationArea.append("No connection to disconnect.\n");
         }
+        // Dừng tự động refresh khi disconnect
+        if (refreshTimer != null) refreshTimer.stop();
     }//GEN-LAST:event_jDisconnectButtonActionPerformed
+    private void jDownloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDownloadButtonActionPerformed
+        java.util.List<String> selectedFiles = jItemList.getSelectedValuesList();
+        if (selectedFiles == null || selectedFiles.isEmpty()) {
+            jNoficationArea.append("Please select file(s) to download.\n");
+            return;
+        }
 
-    private void jDownloadButtonActionPerformed(java.awt.event.ActionEvent evt) {                                                
-        // TODO add your handling code here:private void jDownloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDownloadButtonActionPerformed
-        // Lấy file được chọn
-           String selectedFile = jItemList.getSelectedValue();
-    if (selectedFile == null) {
-        jNoficationArea.append("Please select a file to download.\n");
-        return;
-    }
+        javax.swing.JFileChooser chooser = new javax.swing.JFileChooser();
+        chooser.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
+        int result = chooser.showSaveDialog(this);
+        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
+            java.io.File selectedDir = chooser.getSelectedFile();
 
-    javax.swing.JFileChooser chooser = new javax.swing.JFileChooser();
-    chooser.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
-    int result = chooser.showSaveDialog(this);
-    if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-        java.io.File selectedDir = chooser.getSelectedFile();
-        java.io.File saveFile = new java.io.File(selectedDir, selectedFile);
+            for (String selectedFile : selectedFiles) {
+                // Tạo một luồng riêng cho mỗi file tải về
+                new Thread(() -> {
+                    DownloadProgressDialog progressDialog = new DownloadProgressDialog(this, selectedFile, "Bắt đầu tải...");
+                    javax.swing.SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
+                    try {
+                        String ipText = jServerIPField.getText();
+                        int port = Integer.parseInt(jPortField.getText());
+                        Socket downloadSocket = new Socket(ipText, port);
 
-            try {
-                // Gửi yêu cầu tên file tới server (tạo kết nối mới)
-                String ipText = jServerIPField.getText();
-                int port = Integer.parseInt(jPortField.getText());
-                Socket downloadSocket = new Socket(ipText, port);
+                        // Gửi tên file
+                        java.io.OutputStream out = downloadSocket.getOutputStream();
+                        out.write((selectedFile + "\n").getBytes());
+                        out.flush();
 
-                // Gửi tên file
-                java.io.OutputStream out = downloadSocket.getOutputStream();
-                out.write((selectedFile + "\n").getBytes());
-                out.flush();
+                        // Nhận kích thước file (giả sử server gửi dòng đầu là size)
+                        java.io.InputStream in = downloadSocket.getInputStream();
+                        java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(in));
+                        String sizeLine = reader.readLine();
+                        long fileSize = 0;
+                        try {
+                            fileSize = Long.parseLong(sizeLine.trim());
+                        } catch (Exception ex) {
+                            // Nếu không phải số, coi như không có tiến trình
+                            fileSize = -1;
+                        }
 
-                // Nhận dữ liệu file
-                java.io.InputStream in = downloadSocket.getInputStream();
-                java.io.FileOutputStream fos = new java.io.FileOutputStream(saveFile);
+                        java.io.File saveFile = new java.io.File(selectedDir, selectedFile);
+                        java.io.FileOutputStream fos = new java.io.FileOutputStream(saveFile);
 
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = in.read(buffer)) != -1) {
-                    fos.write(buffer, 0, bytesRead);
-                }
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        long totalRead = 0;
+                        int lastPercent = 0;
+                        while ((bytesRead = in.read(buffer)) != -1) {
+                            fos.write(buffer, 0, bytesRead);
+                            totalRead += bytesRead;
+                            if (fileSize > 0) {
+                                int percent = (int) ((totalRead * 100) / fileSize);
+                                if (percent != lastPercent) {
+                                    lastPercent = percent;
+                                    int finalPercent = percent;
+                                    javax.swing.SwingUtilities.invokeLater(() -> progressDialog.setProgress(finalPercent));
+                                }
+                            }
+                        }
 
-                fos.close();
-                in.close();
-                out.close();
-                downloadSocket.close();
+                        fos.close();
+                        in.close();
+                        out.close();
+                        downloadSocket.close();
 
-                jNoficationArea.append("Đã tải xong file: " + selectedFile + "\n");
-            } catch (Exception ex) {
-                jNoficationArea.append("Lỗi khi tải file: " + ex.getMessage() + "\n");
+                        javax.swing.SwingUtilities.invokeLater(() -> {
+                            progressDialog.setProgress(100);
+                            progressDialog.dispose();
+                            jNoficationArea.append("Đã tải xong file: " + selectedFile + "\n");
+                        });
+                    } catch (Exception ex) {
+                        javax.swing.SwingUtilities.invokeLater(() -> {
+                            progressDialog.dispose();
+                            jNoficationArea.append("Lỗi khi tải file: " + selectedFile + " - " + ex.getMessage() + "\n");
+                        });
+                    }
+                }).start();
             }
         }
     }//GEN-LAST:event_jDownloadButtonActionPerformed
@@ -428,4 +488,27 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
 
+}
+class DownloadProgressDialog extends javax.swing.JDialog {
+    private javax.swing.JProgressBar progressBar;
+    private javax.swing.JLabel label;
+    private javax.swing.JLabel statusLabel; // Thêm label trạng thái
+
+    public DownloadProgressDialog(java.awt.Frame parent, String fileName, String status) {
+        super(parent, "Đang tải: " + fileName, true);
+        progressBar = new javax.swing.JProgressBar(0, 100);
+        label = new javax.swing.JLabel("Đang tải: " + fileName);
+        statusLabel = new javax.swing.JLabel(status); // Hiển thị trạng thái
+
+        setLayout(new java.awt.BorderLayout());
+        add(label, java.awt.BorderLayout.NORTH);
+        add(progressBar, java.awt.BorderLayout.CENTER);
+        add(statusLabel, java.awt.BorderLayout.SOUTH); // Thêm trạng thái phía dưới
+        setSize(350, 100);
+        setLocationRelativeTo(parent);
+    }
+
+    public void setProgress(int percent) {
+        progressBar.setValue(percent);
+    }
 }
