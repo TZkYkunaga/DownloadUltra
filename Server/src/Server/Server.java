@@ -8,6 +8,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.io.IOException;
 import javax.swing.UIManager;
+import java.util.concurrent.CopyOnWriteArrayList;
 /**
  *
  * @author Admin
@@ -259,97 +260,102 @@ public class Server extends javax.swing.JFrame {
                 ServerSocket serverSocket = new ServerSocket(port);
                 jNoficationArea.append("Server is listening on port: " + port + "\n");
 
-                // Chạy server ở thread riêng để không block giao diện
-                // ...existing code...
-            new Thread(() -> {
-                while (true) {
-                    try {
-                        Socket clientSocket = serverSocket.accept();
-                        // LẤY ĐỊA CHỈ IP CLIENT VÀ HIỂN THỊ LÊN jNoficationArea
-                        String clientIP = clientSocket.getInetAddress().getHostAddress();
-                        jNoficationArea.append("Client connected: " + clientIP + "\n");
+                new Thread(() -> {
+                    while (true) {
+                        try {
+                            Socket clientSocket = serverSocket.accept();
+                            connectedClients.add(clientSocket); // Đảm bảo dòng này được gọi khi client kết nối
+                            String clientIP = clientSocket.getInetAddress().getHostAddress();
+                            jNoficationArea.append("Client connected: " + clientIP + "\n");
 
-                        // Xử lý mỗi client ở thread riêng
-                        new Thread(() -> {
-                            try {
-                                java.io.InputStream in = clientSocket.getInputStream();
-                                java.io.OutputStream out = clientSocket.getOutputStream();
-
-                                // Đọc thử xem client gửi gì (nếu gửi tên file thì gửi file, nếu không thì gửi danh sách file)
-                                clientSocket.setSoTimeout(200); // timeout nhỏ để thử đọc
-                                byte[] buf = new byte[1024];
-                                int len = -1;
+                            // Xử lý mỗi client ở thread riêng
+                            new Thread(() -> {
                                 try {
-                                    len = in.read(buf);
-                                } catch (Exception e) { /* timeout */ }
+                                    java.io.InputStream in = clientSocket.getInputStream();
+                                    java.io.OutputStream out = clientSocket.getOutputStream();
 
-                                if (len <= 0) {
-                                    // Không gửi gì, gửi danh sách file
-                                    java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
-                                    String[] files = assetsDir.list();
-                                    StringBuilder sb = new StringBuilder();
-                                    if (files != null) {
-                                        for (String file : files) {
-                                            sb.append(file).append("\n");
-                                        }
-                                    }
-                                    out.write(sb.toString().getBytes());
-                                    out.flush();
-                                } else {
-                                    // Nhận yêu cầu: có thể là "filename" hoặc "filename|start|end"
-                                    String request = new String(buf, 0, len).trim();
-                                    String[] parts = request.split("\\|");
-                                    String fileName = parts[0];
-                                    java.io.File file = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", fileName);
+                                    // Đọc thử xem client gửi gì (nếu gửi tên file thì gửi file, nếu không thì gửi danh sách file)
+                                    clientSocket.setSoTimeout(200);
+                                    byte[] buf = new byte[1024];
+                                    int len = -1;
+                                    try {
+                                        len = in.read(buf);
+                                    } catch (Exception e) { /* timeout */ }
 
-                                    if (file.exists()) {
-                                        long fileLength = file.length();
-                                        long start = 0;
-                                        long end = fileLength - 1;
-                                        if (parts.length == 3) {
-                                            try {
-                                                start = Long.parseLong(parts[1]);
-                                                end = Long.parseLong(parts[2]);
-                                                if (start < 0) start = 0;
-                                                if (end >= fileLength) end = fileLength - 1;
-                                            } catch (Exception e) {
-                                                // Nếu lỗi, giữ mặc định start=0, end=fileLength-1
+                                    if (len <= 0) {
+                                        // Không gửi gì, gửi danh sách file
+                                        java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
+                                        String[] files = assetsDir.list();
+                                        StringBuilder sb = new StringBuilder();
+                                        if (files != null) {
+                                            for (String file : files) {
+                                                sb.append(file).append("\n");
                                             }
                                         }
-
-                                        // Gửi kích thước phần sẽ gửi (end - start + 1)
-                                        out.write(((end - start + 1) + "\n").getBytes());
+                                        out.write(sb.toString().getBytes());
                                         out.flush();
+                                    } else {
+                                        // Nhận yêu cầu: có thể là "filename" hoặc "filename|start|end"
+                                        String request = new String(buf, 0, len).trim();
+                                        String[] parts = request.split("\\|");
+                                        String fileName = parts[0];
+                                        java.io.File file = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", fileName);
 
-                                        // Gửi dữ liệu từ byte start đến end
-                                        try (java.io.RandomAccessFile raf = new java.io.RandomAccessFile(file, "r")) {
-                                            raf.seek(start);
-                                            byte[] buffer = new byte[4096];
-                                            long bytesToSend = end - start + 1;
-                                            while (bytesToSend > 0) {
-                                                int bytesRead = raf.read(buffer, 0, (int)Math.min(buffer.length, bytesToSend));
-                                                if (bytesRead == -1) break;
-                                                out.write(buffer, 0, bytesRead);
-                                                bytesToSend -= bytesRead;
+                                        if (file.exists()) {
+                                            long fileLength = file.length();
+                                            long start = 0;
+                                            long end = fileLength - 1;
+                                            if (parts.length == 3) {
+                                                try {
+                                                    start = Long.parseLong(parts[1]);
+                                                    end = Long.parseLong(parts[2]);
+                                                    if (start < 0) start = 0;
+                                                    if (end >= fileLength) end = fileLength - 1;
+                                                } catch (Exception e) {
+                                                    // Nếu lỗi, giữ mặc định start=0, end=fileLength-1
+                                                }
+                                            }
+
+                                            // Gửi kích thước phần sẽ gửi (end - start + 1)
+                                            out.write(((end - start + 1) + "\n").getBytes());
+                                            out.flush();
+
+                                            // Gửi dữ liệu từ byte start đến end
+                                            try (java.io.RandomAccessFile raf = new java.io.RandomAccessFile(file, "r")) {
+                                                raf.seek(start);
+                                                byte[] buffer = new byte[4096];
+                                                long bytesToSend = end - start + 1;
+                                                while (bytesToSend > 0) {
+                                                    int bytesRead = raf.read(buffer, 0, (int)Math.min(buffer.length, bytesToSend));
+                                                    if (bytesRead == -1) break;
+                                                    out.write(buffer, 0, bytesRead);
+                                                    bytesToSend -= bytesRead;
+                                                }
                                             }
                                         }
+                                        out.flush();
                                     }
-                                    out.flush();
-                                }
-                                out.close();
-                                in.close();
-                                clientSocket.close();
-                                    } catch (Exception ex) {
-                                        // Xử lý lỗi nếu cần
-                                    }
-                                }).start();
-                                } catch (IOException ex) {
-                                    // Xử lý lỗi nếu cần
-                                }
-                            }
-                        }
-                    ).start();
 
+                                    // Giữ kết nối mở để có thể gửi REFRESH về sau
+                                    // Không đóng out/in/clientSocket ở đây nữa
+
+                                    // Lắng nghe client đóng kết nối
+                                    while (true) {
+                                        int test = in.read();
+                                        if (test == -1) break;
+                                    }
+                                } catch (Exception ex) {
+                                    // Xử lý lỗi nếu cần
+                                } finally {
+                                    try { clientSocket.close(); } catch (Exception ex) {}
+                                    connectedClients.remove(clientSocket);
+                                }
+                            }).start();
+                        } catch (IOException ex) {
+                            // Xử lý lỗi nếu cần
+                        }
+                    }
+                }).start();
 
             } catch (NumberFormatException ex) {
                 jNoficationArea.append("Invalid port number!\n");
@@ -373,8 +379,8 @@ public class Server extends javax.swing.JFrame {
                     fos.write(buffer, 0, bytesRead);
                 }
                 jNoficationArea.append("Đã thêm file: " + selectedFile.getName() + "\n");
-                // Cập nhật lại danh sách
                 updateAssetList();
+                notifyClientsRefresh(); // Đảm bảo dòng này được gọi ở đây
             } catch (Exception ex) {
                 jNoficationArea.append("Không thể thêm file: " + ex.getMessage() + "\n");
             }
@@ -397,8 +403,10 @@ public class Server extends javax.swing.JFrame {
                 jNoficationArea.append("Không thể xóa file: " + selectedFile + "\n");
             }
         }
-        // Cập nhật lại danh sách nếu có file bị xóa
-        if (deleted > 0) updateAssetList();
+        if (deleted > 0) {
+            updateAssetList();
+            notifyClientsRefresh(); // Thông báo client refresh
+        }
     }//GEN-LAST:event_jRemoveButtonActionPerformed
 
     /**
@@ -455,4 +463,18 @@ public class Server extends javax.swing.JFrame {
     private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
 
+    private final CopyOnWriteArrayList<Socket> connectedClients = new CopyOnWriteArrayList<>();
+
+    private void notifyClientsRefresh() {
+        for (Socket client : connectedClients) {
+            try {
+                java.io.OutputStream out = client.getOutputStream();
+                out.write("REFRESH\n".getBytes());
+                out.flush();
+            } catch (Exception e) {
+                try { client.close(); } catch (Exception ex) {}
+                connectedClients.remove(client);
+            }
+        }
+    }
 }
