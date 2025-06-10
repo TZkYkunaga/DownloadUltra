@@ -5,7 +5,14 @@
 package Client;
 import java.net.Socket;
 import java.io.IOException;
+
+import javax.swing.JFrame;
 import javax.swing.UIManager;
+import javax.net.ssl.SSLSocket;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManagerFactory;
+import javax.net.ssl.SSLContext;
+import java.security.KeyStore;
 /**
  *
  * @author Admin
@@ -17,7 +24,6 @@ public class Client extends javax.swing.JFrame {
      * 
      */
     private java.net.Socket socket;
-    private javax.swing.Timer refreshTimer;
     public Client() {
         initComponents();
     }
@@ -31,28 +37,34 @@ public class Client extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
-        jPortField = new javax.swing.JTextField();
-        jLabel2 = new javax.swing.JLabel();
-        jConnectButton = new javax.swing.JButton();
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jNoficationArea = new javax.swing.JTextArea();
-        jLabel3 = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
+        jFrame2 = new javax.swing.JFrame();
+        jPanel1 = new javax.swing.JPanel();
+        jToggleButton1 = new javax.swing.JToggleButton();
+        jToggleButton2 = new javax.swing.JToggleButton();
+        jPanel2 = new javax.swing.JPanel();
         jServerIPField = new javax.swing.JTextField();
         jLabel4 = new javax.swing.JLabel();
-        jDisconnectButton = new javax.swing.JButton();
+        jPortField = new javax.swing.JTextField();
+        jLabel2 = new javax.swing.JLabel();
+        jToggleButton3 = new javax.swing.JToggleButton();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
         jItemList = new javax.swing.JList<>();
         jDownloadButton = new javax.swing.JButton();
+        jClient2ClientButton = new javax.swing.JButton();
+        jDisconnectButton = new javax.swing.JButton();
+        jConnectButton = new javax.swing.JButton();
+        jPanel3 = new javax.swing.JPanel();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jTable1 = new javax.swing.JTable();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jNoficationArea = new javax.swing.JTextArea();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
-        openMenuItem = new javax.swing.JMenuItem();
-        saveMenuItem = new javax.swing.JMenuItem();
-        saveAsMenuItem = new javax.swing.JMenuItem();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
-        cutMenuItem = new javax.swing.JMenuItem();
+        connectionMenuItem = new javax.swing.JMenuItem();
         copyMenuItem = new javax.swing.JMenuItem();
         pasteMenuItem = new javax.swing.JMenuItem();
         deleteMenuItem = new javax.swing.JMenuItem();
@@ -60,39 +72,48 @@ public class Client extends javax.swing.JFrame {
         contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
-        jCheckBoxMenuItem1.setSelected(true);
-        jCheckBoxMenuItem1.setText("jCheckBoxMenuItem1");
+        jFrame2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jFrame2.setResizable(false);
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        setLocation(new java.awt.Point(0, 0));
-        setResizable(false);
+        jPanel1.setBackground(new java.awt.Color(153, 153, 153));
+        jPanel1.setForeground(new java.awt.Color(255, 255, 255));
 
-        jPortField.addActionListener(new java.awt.event.ActionListener() {
+        jToggleButton1.setText("Connection");
+        jToggleButton1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jPortFieldActionPerformed(evt);
+                jToggleButton1ActionPerformed(evt);
             }
         });
 
-        jLabel2.setText("Enter port :");
-
-        jConnectButton.setText("Connect");
-        jConnectButton.addActionListener(new java.awt.event.ActionListener() {
+        jToggleButton2.setText("Connection");
+        jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jConnectButtonActionPerformed(evt);
+                jToggleButton2ActionPerformed(evt);
             }
         });
 
-        jNoficationArea.setColumns(20);
-        jNoficationArea.setFont(new java.awt.Font("Segoe UI", 0, 8)); // NOI18N
-        jNoficationArea.setRows(5);
-        jScrollPane1.setViewportView(jNoficationArea);
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jToggleButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jToggleButton1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jToggleButton2)
+                .addContainerGap(295, Short.MAX_VALUE))
+        );
 
-        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
-        jLabel3.setText("List:");
-
-        jLabel1.setText("Client");
-
+        jServerIPField.setText("localhost");
         jServerIPField.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jServerIPFieldActionPerformed(evt);
@@ -101,6 +122,101 @@ public class Client extends javax.swing.JFrame {
 
         jLabel4.setText("Enter Server IP :");
 
+        jPortField.setText("2222");
+        jPortField.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPortFieldActionPerformed(evt);
+            }
+        });
+
+        jLabel2.setText("Enter port :");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 513, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addContainerGap()
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel4)
+                        .addComponent(jLabel2))
+                    .addGap(112, 112, 112)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(jPortField, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
+                        .addComponent(jServerIPField, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
+                    .addContainerGap(137, Short.MAX_VALUE)))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 327, Short.MAX_VALUE)
+            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createSequentialGroup()
+                    .addGap(18, 18, 18)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel2))
+                    .addGap(18, 18, 18)
+                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jServerIPField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel4))
+                    .addContainerGap(245, Short.MAX_VALUE)))
+        );
+
+        javax.swing.GroupLayout jFrame2Layout = new javax.swing.GroupLayout(jFrame2.getContentPane());
+        jFrame2.getContentPane().setLayout(jFrame2Layout);
+        jFrame2Layout.setHorizontalGroup(
+            jFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jFrame2Layout.createSequentialGroup()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jFrame2Layout.setVerticalGroup(
+            jFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(jFrame2Layout.createSequentialGroup()
+                .addGap(15, 15, 15)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jToggleButton3.setText("jToggleButton3");
+
+        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        setLocation(new java.awt.Point(0, 0));
+        setResizable(false);
+
+        jLabel3.setFont(new java.awt.Font("Segoe UI", 0, 18)); // NOI18N
+        jLabel3.setText("List:");
+
+        jLabel1.setFont(new java.awt.Font("Segoe UI", 1, 24)); // NOI18N
+        jLabel1.setText("Client");
+
+        jItemList.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Nothing !" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane3.setViewportView(jItemList);
+
+        jDownloadButton.setText("Download");
+        jDownloadButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jDownloadButtonActionPerformed(evt);
+            }
+        });
+
+        jClient2ClientButton.setText("Client to Client Mode");
+        jClient2ClientButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jClient2ClientButtonActionPerformed(evt);
+            }
+        });
+
         jDisconnectButton.setText("Disconnect");
         jDisconnectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -108,42 +224,65 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        jItemList.setModel(new javax.swing.AbstractListModel<String>() {
-            String[] strings = { "Nothing !" };
-            public int getSize() { return strings.length; }
-            public String getElementAt(int i) { return strings[i]; }
-        });
-        jItemList.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
-            public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                // Enable Download button only if at least one file is selected
-                jDownloadButton.setEnabled(!jItemList.isSelectionEmpty());
-            }
-        });
-        jScrollPane3.setViewportView(jItemList);
-
-        jDownloadButton.setText("Download");
-        jDownloadButton.setEnabled(false); // Ban đầu disable nút Download
-        jDownloadButton.addActionListener(new java.awt.event.ActionListener() {
+        jConnectButton.setText("Connect");
+        jConnectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jDownloadButtonActionPerformed(evt);
+                jConnectButtonActionPerformed(evt);
             }
         });
+
+        jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+
+        jTable1.setAutoCreateRowSorter(true);
+        jTable1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null},
+                {null, null, null, null}
+            },
+            new String [] {
+                "Date", "Path", "Size", "Download Speed"
+            }
+        ));
+        jScrollPane2.setViewportView(jTable1);
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2)
+                .addContainerGap())
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(21, Short.MAX_VALUE))
+        );
+
+        jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
+        jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
+
+        jNoficationArea.setEditable(false);
+        jNoficationArea.setBackground(new java.awt.Color(51, 51, 51));
+        jNoficationArea.setColumns(1);
+        jNoficationArea.setFont(new java.awt.Font("Segoe UI", 0, 11)); // NOI18N
+        jNoficationArea.setForeground(new java.awt.Color(255, 255, 255));
+        jNoficationArea.setRows(5);
+        jNoficationArea.setAlignmentX(1.0F);
+        jNoficationArea.setAlignmentY(1.0F);
+        jNoficationArea.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jNoficationArea.setDebugGraphicsOptions(javax.swing.DebugGraphics.LOG_OPTION);
+        jNoficationArea.setMargin(new java.awt.Insets(0, 6, 2, 6));
+        jScrollPane1.setViewportView(jNoficationArea);
 
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
-
-        openMenuItem.setMnemonic('o');
-        openMenuItem.setText("Open");
-        fileMenu.add(openMenuItem);
-
-        saveMenuItem.setMnemonic('s');
-        saveMenuItem.setText("Save");
-        fileMenu.add(saveMenuItem);
-
-        saveAsMenuItem.setMnemonic('a');
-        saveAsMenuItem.setText("Save As ...");
-        saveAsMenuItem.setDisplayedMnemonicIndex(5);
-        fileMenu.add(saveAsMenuItem);
 
         exitMenuItem.setMnemonic('x');
         exitMenuItem.setText("Exit");
@@ -159,9 +298,14 @@ public class Client extends javax.swing.JFrame {
         editMenu.setMnemonic('e');
         editMenu.setText("Edit");
 
-        cutMenuItem.setMnemonic('t');
-        cutMenuItem.setText("Cut");
-        editMenu.add(cutMenuItem);
+        connectionMenuItem.setMnemonic('t');
+        connectionMenuItem.setText("Connection");
+        connectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                connectionMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(connectionMenuItem);
 
         copyMenuItem.setMnemonic('y');
         copyMenuItem.setText("Copy");
@@ -200,91 +344,48 @@ public class Client extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jScrollPane3)
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(16, 16, 16)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel4)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jServerIPField))
-                                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jLabel2)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                .addGap(42, 42, 42)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jDisconnectButton)
-                                    .addComponent(jConnectButton)))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(134, 134, 134)
-                                .addComponent(jDownloadButton)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jConnectButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jDisconnectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
+                                .addComponent(jClient2ClientButton)))
+                        .addContainerGap())
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 411, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 14, Short.MAX_VALUE)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 190, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(33, 33, 33))
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jDownloadButton)
+                        .addGap(19, 19, 19))))
+            .addComponent(jScrollPane1)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)
-                            .addComponent(jConnectButton))
-                        .addGap(18, 18, 18)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jServerIPField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel4)
-                            .addComponent(jDisconnectButton))
-                        .addGap(30, 30, 30)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jLabel3)
-                            .addComponent(jDownloadButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 350, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addGap(8, 8, 8)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jDisconnectButton)
+                    .addComponent(jConnectButton)
+                    .addComponent(jClient2ClientButton))
+                .addGap(41, 41, 41)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel3)
+                    .addComponent(jDownloadButton))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-     private void refreshFileListFromServer() {
-        String portText = jPortField.getText();
-        String ipText = jServerIPField.getText();
-        try {
-            int port = Integer.parseInt(portText);
-            Socket tempSocket = new Socket(ipText, port);
-
-            java.io.InputStream is = tempSocket.getInputStream();
-            java.util.Scanner scanner = new java.util.Scanner(is).useDelimiter("\\A");
-            String fileList = scanner.hasNext() ? scanner.next() : "";
-
-            javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
-            for (String file : fileList.split("\\r?\\n")) {
-                if (!file.trim().isEmpty()) {
-                    model.addElement(file);
-                }
-            }
-            jItemList.setModel(model);
-
-            tempSocket.close();
-        } catch (Exception ex) {
-            // Có thể bỏ qua lỗi nếu server chưa mở hoặc mất kết nối
-        }
-    }
 
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
@@ -301,13 +402,15 @@ public class Client extends javax.swing.JFrame {
         String ipText = jServerIPField.getText();
         try {
             int port = Integer.parseInt(portText);
-            socket = new java.net.Socket(ipText, port);
-            jNoficationArea.append("Connected to "+ ipText+ " : " + port + "\n");
+            // Sử dụng TLS với truststore
+            socket = createSSLSocket(ipText, port);
+            jNoficationArea.append("Connected to "+ ipText+ " : " + port + " (TLS)\n");
 
-            // Nhận danh sách file từ server
+            // Nhận danh sách file từ server (dữ liệu đã được giải mã tự động)
             java.io.InputStream is = socket.getInputStream();
             java.util.Scanner scanner = new java.util.Scanner(is).useDelimiter("\\A");
             String fileList = scanner.hasNext() ? scanner.next() : "";
+            scanner.close();
 
             javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
             for (String file : fileList.split("\\r?\\n")) {
@@ -317,17 +420,19 @@ public class Client extends javax.swing.JFrame {
             }
             jItemList.setModel(model);
 
-            jNoficationArea.append("Đã kết nối thành công!\n"); // Thêm dòng này
+            jNoficationArea.append("Đã kết nối thành công!\n");
 
-            // Bắt đầu tự động refresh danh sách file mỗi 5 giây
-            if (refreshTimer != null) refreshTimer.stop();
-            refreshTimer = new javax.swing.Timer(20000, e -> refreshFileListFromServer());
-            refreshTimer.start();
+            // XÓA chức năng tự động refresh danh sách file mỗi 5 giây
+            // if (refreshTimer != null) refreshTimer.stop();
+            // refreshTimer = new javax.swing.Timer(5000, e -> refreshFileListFromServer());
+            // refreshTimer.start();
 
         } catch (NumberFormatException ex) {
             jNoficationArea.append("Invalid port number!\n");
         } catch (java.io.IOException ex) {
-            jNoficationArea.append("Could not connect to " + ipText + ":" + portText + "\n");
+            jNoficationArea.append("Could not connect to " + ipText + ":" + portText + " (TLS)\n");
+        } catch (Exception ex) {
+            jNoficationArea.append("TLS error: " + ex.getMessage() + "\n");
         }
     }//GEN-LAST:event_jConnectButtonActionPerformed
 
@@ -347,8 +452,8 @@ public class Client extends javax.swing.JFrame {
         } else {
             jNoficationArea.append("No connection to disconnect.\n");
         }
-        // Dừng tự động refresh khi disconnect
-        if (refreshTimer != null) refreshTimer.stop();
+        // XÓA dòng dừng refreshTimer
+        // if (refreshTimer != null) refreshTimer.stop();
     }//GEN-LAST:event_jDisconnectButtonActionPerformed
     private void jDownloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDownloadButtonActionPerformed
         java.util.List<String> selectedFiles = jItemList.getSelectedValuesList();
@@ -364,18 +469,44 @@ public class Client extends javax.swing.JFrame {
             java.io.File selectedDir = chooser.getSelectedFile();
 
             for (String selectedFile : selectedFiles) {
-                // Tạo một luồng riêng cho mỗi file tải về với khả năng pause/resume
-                DownloadProgressDialog progressDialog = new DownloadProgressDialog(this, selectedFile, "Bắt đầu tải...");
                 String ipText = jServerIPField.getText();
                 int port = Integer.parseInt(jPortField.getText());
                 java.io.File saveFile = new java.io.File(selectedDir, selectedFile);
 
-                DownloadTask task = new DownloadTask(selectedFile, saveFile, ipText, port, progressDialog, jNoficationArea);
-                progressDialog.setDownloadTask(task);
+                // Thêm dòng mới vào bảng jTable1 để hiển thị tiến trình tải (bỏ cột Size)
+                javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+                int row = model.getRowCount();
+                String dateStr = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+                model.addRow(new Object[]{dateStr, saveFile.getAbsolutePath(), /*size*/ null, "0 KB/s"});
+
+                DownloadTask task = new DownloadTask(selectedFile, saveFile, ipText, port, row, model, jNoficationArea);
                 task.download();
             }
         }
     }//GEN-LAST:event_jDownloadButtonActionPerformed
+
+    private void connectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectionMenuItemActionPerformed
+        // TODO add your handling code here:
+        // Hiển thị jFrame2 khi chọn menu Connection
+        jFrame2.setSize(700, 400); // Đặt kích thước rộng hơn (tùy chỉnh theo ý bạn)
+        jFrame2.setLocationRelativeTo(this);
+        jFrame2.setVisible(true);
+    }//GEN-LAST:event_connectionMenuItemActionPerformed
+
+    private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jToggleButton1ActionPerformed
+
+    private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jToggleButton2ActionPerformed
+
+    // Thêm phương thức xử lý sự kiện cho nút Client2Client
+    private void jClient2ClientButtonActionPerformed(java.awt.event.ActionEvent evt) {
+    
+        // Nếu muốn ẩn cửa sổ hiện tại thì bỏ comment dòng dưới:
+        // this.setVisible(false);
+    }
 
 
     /**
@@ -421,35 +552,62 @@ public class Client extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
+    private javax.swing.JMenuItem connectionMenuItem;
     private javax.swing.JMenuItem contentsMenuItem;
     private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem cutMenuItem;
     private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
+    private javax.swing.JButton jClient2ClientButton;
     private javax.swing.JButton jConnectButton;
     private javax.swing.JButton jDisconnectButton;
     private javax.swing.JButton jDownloadButton;
+    private javax.swing.JFrame jFrame2;
     private javax.swing.JList<String> jItemList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JTextArea jNoficationArea;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JTextField jPortField;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jServerIPField;
+    private javax.swing.JTable jTable1;
+    private javax.swing.JToggleButton jToggleButton1;
+    private javax.swing.JToggleButton jToggleButton2;
+    private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem openMenuItem;
     private javax.swing.JMenuItem pasteMenuItem;
-    private javax.swing.JMenuItem saveAsMenuItem;
-    private javax.swing.JMenuItem saveMenuItem;
     // End of variables declaration//GEN-END:variables
 
+    // Thêm phương thức này vào trong class Client
+    private SSLSocket createSSLSocket(String ip, int port) throws Exception {
+        // Đường dẫn tuyệt đối tới clienttruststore.jks
+        String trustStorePath = "c:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Client\\DownLoadUltraClient\\src\\Client\\clienttruststore.jks";
+        String trustStorePassword = "password"; // đúng với mật khẩu truststore bạn đã tạo
+
+        KeyStore ts = KeyStore.getInstance("JKS");
+        try (java.io.FileInputStream fis = new java.io.FileInputStream(trustStorePath)) {
+            ts.load(fis, trustStorePassword.toCharArray());
+        }
+        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+        tmf.init(ts);
+
+        SSLContext ctx = SSLContext.getInstance("TLS");
+        ctx.init(null, tmf.getTrustManagers(), null);
+
+        SSLSocketFactory factory = ctx.getSocketFactory();
+        SSLSocket sslSocket = (SSLSocket) factory.createSocket(ip, port);
+        sslSocket.startHandshake();
+        return sslSocket;
+    }
 }
 class DownloadTask {
     private volatile boolean paused = false;
@@ -459,15 +617,17 @@ class DownloadTask {
     private final java.io.File saveFile;
     private final String ipText;
     private final int port;
-    private final DownloadProgressDialog progressDialog;
+    private final int tableRow;
+    private final javax.swing.table.DefaultTableModel tableModel;
     private final javax.swing.JTextArea jNoficationArea;
 
-    public DownloadTask(String fileName, java.io.File saveFile, String ipText, int port, DownloadProgressDialog progressDialog, javax.swing.JTextArea jNoficationArea) {
+    public DownloadTask(String fileName, java.io.File saveFile, String ipText, int port, int tableRow, javax.swing.table.DefaultTableModel tableModel, javax.swing.JTextArea jNoficationArea) {
         this.fileName = fileName;
         this.saveFile = saveFile;
         this.ipText = ipText;
         this.port = port;
-        this.progressDialog = progressDialog;
+        this.tableRow = tableRow;
+        this.tableModel = tableModel;
         this.jNoficationArea = jNoficationArea;
     }
 
@@ -487,10 +647,11 @@ class DownloadTask {
 
     public void download() {
         new Thread(() -> {
-            javax.swing.SwingUtilities.invokeLater(() -> progressDialog.setVisible(true));
             try {
                 long fileSize = 0;
-                // Nếu file đã tồn tại, lấy số byte đã tải
+                long startTime = System.currentTimeMillis();
+                long lastTime = startTime;
+                long lastBytes = 0;
                 if (saveFile.exists()) {
                     downloadedBytes = saveFile.length();
                 } else {
@@ -498,13 +659,11 @@ class DownloadTask {
                 }
                 Socket downloadSocket = new Socket(ipText, port);
 
-                // Gửi tên file và vị trí resume (nếu có)
                 java.io.OutputStream out = downloadSocket.getOutputStream();
                 String request = fileName + "|" + downloadedBytes + "\n";
                 out.write(request.getBytes());
                 out.flush();
 
-                // Nhận kích thước file (giả sử server gửi dòng đầu là size)
                 java.io.InputStream in = downloadSocket.getInputStream();
                 java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(in));
                 String sizeLine = reader.readLine();
@@ -514,6 +673,8 @@ class DownloadTask {
                     fileSize = -1;
                 }
 
+                // Không cập nhật size vào bảng nữa
+
                 java.io.RandomAccessFile raf = new java.io.RandomAccessFile(saveFile, "rw");
                 raf.seek(downloadedBytes);
 
@@ -522,7 +683,6 @@ class DownloadTask {
                 long totalRead = downloadedBytes;
                 int lastPercent = (fileSize > 0 && fileSize > downloadedBytes) ? (int)((downloadedBytes * 100) / fileSize) : 0;
                 while (!stopped && (bytesRead = in.read(buffer)) != -1) {
-                    // Kiểm tra pause
                     synchronized (this) {
                         while (paused) {
                             wait();
@@ -531,13 +691,25 @@ class DownloadTask {
                     raf.write(buffer, 0, bytesRead);
                     totalRead += bytesRead;
                     downloadedBytes = totalRead;
+                    long now = System.currentTimeMillis();
+                    // Cập nhật tiến trình (downloadingprocess)
                     if (fileSize > 0) {
                         int percent = (int) ((totalRead * 100) / fileSize);
                         if (percent != lastPercent) {
                             lastPercent = percent;
-                            int finalPercent = percent;
-                            javax.swing.SwingUtilities.invokeLater(() -> progressDialog.setProgress(finalPercent));
+                            javax.swing.SwingUtilities.invokeLater(() -> {
+                                tableModel.setValueAt(percent + "%", tableRow, 3); // Hiển thị phần trăm ở cột Download Speed
+                            });
                         }
+                    }
+                    // Cập nhật tốc độ mỗi 0.5s
+                    if (now - lastTime > 500) {
+                        long speed = (totalRead - lastBytes) * 1000 / (now - lastTime); // bytes/sec
+                        lastTime = now;
+                        lastBytes = totalRead;
+                        javax.swing.SwingUtilities.invokeLater(() -> {
+                            tableModel.setValueAt((speed / 1024) + " KB/s", tableRow, 3);
+                        });
                     }
                 }
                 raf.close();
@@ -547,79 +719,21 @@ class DownloadTask {
 
                 if (!stopped) {
                     javax.swing.SwingUtilities.invokeLater(() -> {
-                        progressDialog.setProgress(100);
-                        progressDialog.dispose();
+                        tableModel.setValueAt("100%", tableRow, 3);
                         jNoficationArea.append("Đã tải xong file: " + fileName + "\n");
                     });
                 } else {
                     javax.swing.SwingUtilities.invokeLater(() -> {
-                        progressDialog.dispose();
+                        tableModel.setValueAt("Đã dừng", tableRow, 3);
                         jNoficationArea.append("Đã dừng tải file: " + fileName + "\n");
                     });
                 }
             } catch (Exception ex) {
                 javax.swing.SwingUtilities.invokeLater(() -> {
-                    progressDialog.dispose();
+                    tableModel.setValueAt("Lỗi", tableRow, 3);
                     jNoficationArea.append("Lỗi khi tải file: " + fileName + " - " + ex.getMessage() + "\n");
                 });
             }
         }).start();
-    }
-}
-
-class DownloadProgressDialog extends javax.swing.JDialog {
-    private javax.swing.JProgressBar progressBar;
-    private javax.swing.JLabel label;
-    private javax.swing.JLabel statusLabel;
-    private javax.swing.JButton pauseButton;
-    private javax.swing.JButton resumeButton;
-    private DownloadTask downloadTask;
-
-    public DownloadProgressDialog(java.awt.Frame parent, String fileName, String status) {
-        super(parent, "Đang tải: " + fileName, true);
-        progressBar = new javax.swing.JProgressBar(0, 100);
-        label = new javax.swing.JLabel("Đang tải: " + fileName);
-        statusLabel = new javax.swing.JLabel(status);
-
-        pauseButton = new javax.swing.JButton("Pause");
-        resumeButton = new javax.swing.JButton("Resume");
-        resumeButton.setEnabled(false);
-
-        java.awt.Panel buttonPanel = new java.awt.Panel();
-        buttonPanel.add(pauseButton);
-        buttonPanel.add(resumeButton);
-
-        setLayout(new java.awt.BorderLayout());
-        add(label, java.awt.BorderLayout.NORTH);
-        add(progressBar, java.awt.BorderLayout.CENTER);
-        add(statusLabel, java.awt.BorderLayout.SOUTH);
-        add(buttonPanel, java.awt.BorderLayout.EAST);
-        setSize(400, 120);
-        setLocationRelativeTo(parent);
-
-        pauseButton.addActionListener(e -> {
-            if (downloadTask != null) {
-                downloadTask.pause();
-                pauseButton.setEnabled(false);
-                resumeButton.setEnabled(true);
-                statusLabel.setText("Đã tạm dừng");
-            }
-        });
-        resumeButton.addActionListener(e -> {
-            if (downloadTask != null) {
-                downloadTask.resume();
-                pauseButton.setEnabled(true);
-                resumeButton.setEnabled(false);
-                statusLabel.setText("Đang tiếp tục...");
-            }
-        });
-    }
-
-    public void setProgress(int percent) {
-        progressBar.setValue(percent);
-    }
-
-    public void setDownloadTask(DownloadTask task) {
-        this.downloadTask = task;
     }
 }
