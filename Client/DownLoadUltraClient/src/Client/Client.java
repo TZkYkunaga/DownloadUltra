@@ -3,10 +3,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/Application.java to edit this template
  */
 package Client;
-import java.net.Socket;
-import java.io.IOException;
 
-import javax.swing.JFrame;
+
+import java.io.File;
+import java.io.FileInputStream;
+import javax.swing.JFileChooser;
 import javax.swing.UIManager;
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
@@ -24,8 +25,14 @@ public class Client extends javax.swing.JFrame {
      * 
      */
     private java.net.Socket socket;
+    private java.util.Map<String, javax.swing.JFrame> downloadFrames = new java.util.HashMap<>();
+    private String defaultDownloadPath = System.getProperty("user.home") + File.separator + "Downloads";
+    private javax.swing.JFrame pathConfigFrame;
+    private javax.swing.JTextField pathTextField;
+    
     public Client() {
         initComponents();
+        initPathConfigFrame();
     }
 
     /**
@@ -37,16 +44,13 @@ public class Client extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jFrame2 = new javax.swing.JFrame();
+        jPreferenceFrame = new javax.swing.JFrame();
         jPanel1 = new javax.swing.JPanel();
         jToggleButton1 = new javax.swing.JToggleButton();
-        jToggleButton2 = new javax.swing.JToggleButton();
-        jPanel2 = new javax.swing.JPanel();
         jServerIPField = new javax.swing.JTextField();
-        jLabel4 = new javax.swing.JLabel();
         jPortField = new javax.swing.JTextField();
         jLabel2 = new javax.swing.JLabel();
-        jToggleButton3 = new javax.swing.JToggleButton();
+        jLabel4 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jScrollPane3 = new javax.swing.JScrollPane();
@@ -64,16 +68,14 @@ public class Client extends javax.swing.JFrame {
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
         editMenu = new javax.swing.JMenu();
-        connectionMenuItem = new javax.swing.JMenuItem();
-        copyMenuItem = new javax.swing.JMenuItem();
-        pasteMenuItem = new javax.swing.JMenuItem();
-        deleteMenuItem = new javax.swing.JMenuItem();
+        jConnectionMenuItem = new javax.swing.JMenuItem();
+        jPathMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
 
-        jFrame2.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
-        jFrame2.setResizable(false);
+        jPreferenceFrame.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
+        jPreferenceFrame.setResizable(false);
 
         jPanel1.setBackground(new java.awt.Color(153, 153, 153));
         jPanel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -85,22 +87,13 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        jToggleButton2.setText("Connection");
-        jToggleButton2.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jToggleButton2ActionPerformed(evt);
-            }
-        });
-
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jToggleButton2, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE))
+                .addComponent(jToggleButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 135, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -108,9 +101,7 @@ public class Client extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jToggleButton1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jToggleButton2)
-                .addContainerGap(295, Short.MAX_VALUE))
+                .addContainerGap(112, Short.MAX_VALUE))
         );
 
         jServerIPField.setText("localhost");
@@ -119,8 +110,6 @@ public class Client extends javax.swing.JFrame {
                 jServerIPFieldActionPerformed(evt);
             }
         });
-
-        jLabel4.setText("Enter Server IP :");
 
         jPortField.setText("2222");
         jPortField.addActionListener(new java.awt.event.ActionListener() {
@@ -131,59 +120,38 @@ public class Client extends javax.swing.JFrame {
 
         jLabel2.setText("Enter port :");
 
-        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
-        jPanel2.setLayout(jPanel2Layout);
-        jPanel2Layout.setHorizontalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 513, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addContainerGap()
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addComponent(jLabel4)
-                        .addComponent(jLabel2))
-                    .addGap(112, 112, 112)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(jPortField, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE)
-                        .addComponent(jServerIPField, javax.swing.GroupLayout.DEFAULT_SIZE, 177, Short.MAX_VALUE))
-                    .addContainerGap(137, Short.MAX_VALUE)))
-        );
-        jPanel2Layout.setVerticalGroup(
-            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 327, Short.MAX_VALUE)
-            .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel2Layout.createSequentialGroup()
-                    .addGap(18, 18, 18)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel2))
-                    .addGap(18, 18, 18)
-                    .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jServerIPField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(jLabel4))
-                    .addContainerGap(245, Short.MAX_VALUE)))
-        );
+        jLabel4.setText("Enter Server IP :");
 
-        javax.swing.GroupLayout jFrame2Layout = new javax.swing.GroupLayout(jFrame2.getContentPane());
-        jFrame2.getContentPane().setLayout(jFrame2Layout);
-        jFrame2Layout.setHorizontalGroup(
-            jFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jFrame2Layout.createSequentialGroup()
+        javax.swing.GroupLayout jPreferenceFrameLayout = new javax.swing.GroupLayout(jPreferenceFrame.getContentPane());
+        jPreferenceFrame.getContentPane().setLayout(jPreferenceFrameLayout);
+        jPreferenceFrameLayout.setHorizontalGroup(
+            jPreferenceFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPreferenceFrameLayout.createSequentialGroup()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(54, 54, 54)
+                .addGroup(jPreferenceFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel4)
+                    .addComponent(jLabel2))
+                .addGap(58, 58, 58)
+                .addGroup(jPreferenceFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jServerIPField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(36, Short.MAX_VALUE))
         );
-        jFrame2Layout.setVerticalGroup(
-            jFrame2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPreferenceFrameLayout.setVerticalGroup(
+            jPreferenceFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addGroup(jFrame2Layout.createSequentialGroup()
-                .addGap(15, 15, 15)
-                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addGroup(jPreferenceFrameLayout.createSequentialGroup()
+                .addGap(32, 32, 32)
+                .addGroup(jPreferenceFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel2))
+                .addGap(18, 18, 18)
+                .addGroup(jPreferenceFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jServerIPField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
-
-        jToggleButton3.setText("jToggleButton3");
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
@@ -210,7 +178,7 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        jClient2ClientButton.setText("Client to Client Mode");
+        jClient2ClientButton.setLabel("CLient");
         jClient2ClientButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jClient2ClientButtonActionPerformed(evt);
@@ -234,7 +202,6 @@ public class Client extends javax.swing.JFrame {
         jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
 
         jTable1.setAutoCreateRowSorter(true);
-        jTable1.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null, null, null},
@@ -246,6 +213,8 @@ public class Client extends javax.swing.JFrame {
                 "Date", "Path", "Size", "Download Speed"
             }
         ));
+        jTable1.setNextFocusableComponent(this);
+        jTable1.setShowGrid(false);
         jScrollPane2.setViewportView(jTable1);
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
@@ -260,9 +229,8 @@ public class Client extends javax.swing.JFrame {
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 363, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(21, Short.MAX_VALUE))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 8, Short.MAX_VALUE))
         );
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
@@ -298,26 +266,22 @@ public class Client extends javax.swing.JFrame {
         editMenu.setMnemonic('e');
         editMenu.setText("Edit");
 
-        connectionMenuItem.setMnemonic('t');
-        connectionMenuItem.setText("Connection");
-        connectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
+        jConnectionMenuItem.setMnemonic('t');
+        jConnectionMenuItem.setText("Connection");
+        jConnectionMenuItem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                connectionMenuItemActionPerformed(evt);
+                jConnectionMenuItemActionPerformed(evt);
             }
         });
-        editMenu.add(connectionMenuItem);
+        editMenu.add(jConnectionMenuItem);
 
-        copyMenuItem.setMnemonic('y');
-        copyMenuItem.setText("Copy");
-        editMenu.add(copyMenuItem);
-
-        pasteMenuItem.setMnemonic('p');
-        pasteMenuItem.setText("Paste");
-        editMenu.add(pasteMenuItem);
-
-        deleteMenuItem.setMnemonic('d');
-        deleteMenuItem.setText("Delete");
-        editMenu.add(deleteMenuItem);
+        jPathMenuItem.setText("Saving Path");
+        jPathMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jPathMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(jPathMenuItem);
 
         menuBar.add(editMenu);
 
@@ -345,7 +309,6 @@ public class Client extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                             .addComponent(jScrollPane3)
                             .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -353,10 +316,12 @@ public class Client extends javax.swing.JFrame {
                                 .addComponent(jConnectButton)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jDisconnectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 156, Short.MAX_VALUE)
-                                .addComponent(jClient2ClientButton)))
+                                .addGap(184, 184, 184)
+                                .addComponent(jClient2ClientButton)
+                                .addGap(0, 25, Short.MAX_VALUE))
+                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                         .addContainerGap())
-                    .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                         .addComponent(jDownloadButton)
@@ -380,9 +345,12 @@ public class Client extends javax.swing.JFrame {
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(24, 24, 24)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
+
+        jClient2ClientButton.getAccessibleContext().setAccessibleName("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -397,14 +365,12 @@ public class Client extends javax.swing.JFrame {
     }//GEN-LAST:event_jPortFieldActionPerformed
 
     private void jConnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectButtonActionPerformed
-        // TODO add your handling code here:
-         String portText = jPortField.getText();
+        String portText = jPortField.getText();
         String ipText = jServerIPField.getText();
         try {
             int port = Integer.parseInt(portText);
-            // Sử dụng TLS với truststore
             socket = createSSLSocket(ipText, port);
-            jNoficationArea.append("Connected to "+ ipText+ " : " + port + " (TLS)\n");
+            jNoficationArea.append("Connected to " + ipText + " : " + port + " (TLS)\n");
 
             // Nhận danh sách file từ server (dữ liệu đã được giải mã tự động)
             java.io.InputStream is = socket.getInputStream();
@@ -431,6 +397,7 @@ public class Client extends javax.swing.JFrame {
             jNoficationArea.append("Invalid port number!\n");
         } catch (java.io.IOException ex) {
             jNoficationArea.append("Could not connect to " + ipText + ":" + portText + " (TLS)\n");
+            jNoficationArea.append("Lỗi: " + ex.getMessage() + "\n");
         } catch (Exception ex) {
             jNoficationArea.append("TLS error: " + ex.getMessage() + "\n");
         }
@@ -462,36 +429,75 @@ public class Client extends javax.swing.JFrame {
             return;
         }
 
-        javax.swing.JFileChooser chooser = new javax.swing.JFileChooser();
-        chooser.setFileSelectionMode(javax.swing.JFileChooser.DIRECTORIES_ONLY);
-        int result = chooser.showSaveDialog(this);
-        if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
-            java.io.File selectedDir = chooser.getSelectedFile();
+        File selectedDir = new File(defaultDownloadPath);
+        int result = JFileChooser.APPROVE_OPTION;
+        
+        // If default path doesn't exist or user wants to choose another location
+        if (!selectedDir.exists() || !selectedDir.isDirectory()) {
+            int option = javax.swing.JOptionPane.showConfirmDialog(
+                this,
+                "Default download location not found.\nDo you want to choose a different location?",
+                "Download Location",
+                javax.swing.JOptionPane.YES_NO_OPTION
+            );
+            
+            if (option == javax.swing.JOptionPane.YES_OPTION) {
+                JFileChooser chooser = new JFileChooser();
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                result = chooser.showSaveDialog(this);
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    selectedDir = chooser.getSelectedFile();
+                    // Ask if user wants to make this the new default
+                    option = javax.swing.JOptionPane.showConfirmDialog(
+                        this,
+                        "Do you want to make this the new default download location?",
+                        "Set Default Location",
+                        javax.swing.JOptionPane.YES_NO_OPTION
+                    );
+                    if (option == javax.swing.JOptionPane.YES_OPTION) {
+                        defaultDownloadPath = selectedDir.getAbsolutePath();
+                        if (pathTextField != null) {
+                            pathTextField.setText(defaultDownloadPath);
+                        }
+                    }
+                }
+            } else {
+                result = JFileChooser.CANCEL_OPTION;
+            }
+        }
 
-            for (String selectedFile : selectedFiles) {
-                String ipText = jServerIPField.getText();
-                int port = Integer.parseInt(jPortField.getText());
-                java.io.File saveFile = new java.io.File(selectedDir, selectedFile);
+        if (result == JFileChooser.APPROVE_OPTION) {
+  
+            String ipText = jServerIPField.getText();
+            int port = Integer.parseInt(jPortField.getText());
 
-                // Thêm dòng mới vào bảng jTable1 để hiển thị tiến trình tải (bỏ cột Size)
-                javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
-                int row = model.getRowCount();
-                String dateStr = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
-                model.addRow(new Object[]{dateStr, saveFile.getAbsolutePath(), /*size*/ null, "0 KB/s"});
+            for (String fileName : selectedFiles) {
+                try {
+                    SSLSocket downloadSocket = createSSLSocket(ipText, port);
+                    File saveFile = new File(selectedDir, fileName);
 
-                DownloadTask task = new DownloadTask(selectedFile, saveFile, ipText, port, row, model, jNoficationArea);
-                task.download();
+                    javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
+                    int row = model.getRowCount();
+                    String dateStr = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
+                    model.addRow(new Object[]{dateStr, saveFile.getAbsolutePath(), "0%", "Waiting...", "Waiting"});
+
+                    DownloadTask task = new DownloadTask(fileName, saveFile, downloadSocket, row, model, jNoficationArea);
+                    createDownloadFrame(fileName, task);
+                    task.start();
+                } catch (Exception e) {
+                    jNoficationArea.append("Error starting download: " + e.getMessage() + "\n");
+                }
             }
         }
     }//GEN-LAST:event_jDownloadButtonActionPerformed
 
-    private void connectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_connectionMenuItemActionPerformed
+    private void jConnectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectionMenuItemActionPerformed
         // TODO add your handling code here:
         // Hiển thị jFrame2 khi chọn menu Connection
-        jFrame2.setSize(700, 400); // Đặt kích thước rộng hơn (tùy chỉnh theo ý bạn)
-        jFrame2.setLocationRelativeTo(this);
-        jFrame2.setVisible(true);
-    }//GEN-LAST:event_connectionMenuItemActionPerformed
+        jPreferenceFrame.setSize(700, 400); // Đặt kích thước rộng hơn (tùy chỉnh theo ý bạn)
+        jPreferenceFrame.setLocationRelativeTo(this);
+        jPreferenceFrame.setVisible(true);
+    }//GEN-LAST:event_jConnectionMenuItemActionPerformed
 
     private void jToggleButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton1ActionPerformed
         // TODO add your handling code here:
@@ -500,6 +506,14 @@ public class Client extends javax.swing.JFrame {
     private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_jToggleButton2ActionPerformed
+
+    private void jPathMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPathMenuItemActionPerformed
+        if (pathConfigFrame == null) {
+            initPathConfigFrame();
+        }
+        pathTextField.setText(defaultDownloadPath);
+        pathConfigFrame.setVisible(true);
+    }//GEN-LAST:event_jPathMenuItemActionPerformed
 
     // Thêm phương thức xử lý sự kiện cho nút Client2Client
     private void jClient2ClientButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -552,19 +566,16 @@ public class Client extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenuItem aboutMenuItem;
-    private javax.swing.JMenuItem connectionMenuItem;
     private javax.swing.JMenuItem contentsMenuItem;
-    private javax.swing.JMenuItem copyMenuItem;
-    private javax.swing.JMenuItem deleteMenuItem;
     private javax.swing.JMenu editMenu;
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jClient2ClientButton;
     private javax.swing.JButton jConnectButton;
+    private javax.swing.JMenuItem jConnectionMenuItem;
     private javax.swing.JButton jDisconnectButton;
     private javax.swing.JButton jDownloadButton;
-    private javax.swing.JFrame jFrame2;
     private javax.swing.JList<String> jItemList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -572,30 +583,33 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel4;
     private javax.swing.JTextArea jNoficationArea;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
+    private javax.swing.JMenuItem jPathMenuItem;
     private javax.swing.JTextField jPortField;
+    private javax.swing.JFrame jPreferenceFrame;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextField jServerIPField;
     private javax.swing.JTable jTable1;
     private javax.swing.JToggleButton jToggleButton1;
-    private javax.swing.JToggleButton jToggleButton2;
-    private javax.swing.JToggleButton jToggleButton3;
     private javax.swing.JMenuBar menuBar;
-    private javax.swing.JMenuItem pasteMenuItem;
     // End of variables declaration//GEN-END:variables
 
-    // Thêm phương thức này vào trong class Client
+    // Đường dẫn truststore nên để cùng thư mục với file .jar hoặc thư mục chạy chương trình
+    private final String TRUSTSTORE_PATH = System.getProperty("user.dir") + File.separator + "\\Client\\DownLoadUltraClient\\src\\client\\clienttruststore.jks";
+    private final String TRUSTSTORE_PASSWORD = "password";
+
     private SSLSocket createSSLSocket(String ip, int port) throws Exception {
-        // Đường dẫn tuyệt đối tới clienttruststore.jks
-        String trustStorePath = "c:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Client\\DownLoadUltraClient\\src\\Client\\clienttruststore.jks";
-        String trustStorePassword = "password"; // đúng với mật khẩu truststore bạn đã tạo
+        // Kiểm tra file truststore tồn tại
+        File trustFile = new File(TRUSTSTORE_PATH);
+        if (!trustFile.exists()) {
+            jNoficationArea.append("Không tìm thấy file truststore: " + TRUSTSTORE_PATH + "\n");
+        }
 
         KeyStore ts = KeyStore.getInstance("JKS");
-        try (java.io.FileInputStream fis = new java.io.FileInputStream(trustStorePath)) {
-            ts.load(fis, trustStorePassword.toCharArray());
+        try (FileInputStream fis = new FileInputStream(TRUSTSTORE_PATH)) {
+            ts.load(fis, TRUSTSTORE_PASSWORD.toCharArray());
         }
         TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
         tmf.init(ts);
@@ -608,132 +622,325 @@ public class Client extends javax.swing.JFrame {
         sslSocket.startHandshake();
         return sslSocket;
     }
+
+    private void createDownloadFrame(String fileName, DownloadTask task) {
+        javax.swing.JFrame downloadFrame = new javax.swing.JFrame("Downloading: " + fileName);
+        downloadFrame.setSize(500, 250);
+        downloadFrame.setResizable(false);
+        downloadFrame.setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        downloadFrame.setLocationRelativeTo(this);
+
+        // Main panel với padding
+        javax.swing.JPanel mainPanel = new javax.swing.JPanel();
+        mainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainPanel.setLayout(new javax.swing.BoxLayout(mainPanel, javax.swing.BoxLayout.Y_AXIS));
+
+        // File name panel
+        javax.swing.JPanel fileNamePanel = new javax.swing.JPanel(new java.awt.BorderLayout());
+        javax.swing.JLabel fileNameLabel = new javax.swing.JLabel(fileName);
+        fileNameLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.BOLD, 14));
+        fileNamePanel.add(fileNameLabel, java.awt.BorderLayout.WEST);
+        mainPanel.add(fileNamePanel);
+        mainPanel.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
+
+        // Progress panel
+        javax.swing.JPanel progressPanel = new javax.swing.JPanel(new java.awt.BorderLayout(5, 0));
+        javax.swing.JProgressBar progressBar = new javax.swing.JProgressBar(0, 100);
+        progressBar.setStringPainted(true);
+        progressBar.setPreferredSize(new java.awt.Dimension(progressBar.getPreferredSize().width, 25));
+        progressBar.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+        progressBar.setForeground(new java.awt.Color(46, 204, 113));
+        progressPanel.add(progressBar, java.awt.BorderLayout.CENTER);
+        mainPanel.add(progressPanel);
+        mainPanel.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 5)));
+
+        // Status panel
+        javax.swing.JPanel statusPanel = new javax.swing.JPanel(new java.awt.BorderLayout(5, 0));
+        javax.swing.JLabel speedLabel = new javax.swing.JLabel("Speed: 0 KB/s");
+        javax.swing.JLabel sizeLabel = new javax.swing.JLabel("Size: 0 KB");
+        speedLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+        sizeLabel.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+        statusPanel.add(speedLabel, java.awt.BorderLayout.WEST);
+        statusPanel.add(sizeLabel, java.awt.BorderLayout.EAST);
+        mainPanel.add(statusPanel);
+        mainPanel.add(javax.swing.Box.createRigidArea(new java.awt.Dimension(0, 10)));
+
+        // Buttons panel
+        javax.swing.JPanel buttonsPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.CENTER, 10, 0));
+        
+        javax.swing.JButton pauseButton = new javax.swing.JButton("Pause");
+        javax.swing.JButton resumeButton = new javax.swing.JButton("Resume");
+        javax.swing.JButton cancelButton = new javax.swing.JButton("Cancel");
+
+        // Set icons for buttons
+        try {
+            pauseButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Assets/pause.png")));
+            resumeButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Assets/play.png")));
+            cancelButton.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Client/Assets/cancel.png")));
+        } catch (Exception e) {
+        }
+
+        // Style buttons
+        for (javax.swing.JButton button : new javax.swing.JButton[]{pauseButton, resumeButton, cancelButton}) {
+            button.setFocusPainted(false);
+            button.setFont(new java.awt.Font("Segoe UI", java.awt.Font.PLAIN, 12));
+            button.setPreferredSize(new java.awt.Dimension(100, 30));
+        }
+
+        resumeButton.setEnabled(false);
+
+        buttonsPanel.add(pauseButton);
+        buttonsPanel.add(resumeButton);
+        buttonsPanel.add(cancelButton);
+        mainPanel.add(buttonsPanel);
+
+        downloadFrame.add(mainPanel);
+        downloadFrame.setVisible(true);
+
+        pauseButton.addActionListener(e -> task.pauseDownload());
+        resumeButton.addActionListener(e -> task.resumeDownload());
+        cancelButton.addActionListener(e -> {
+            task.cancelDownload();
+            downloadFrame.dispose();
+            downloadFrames.remove(fileName);
+        });
+
+        task.setOnProgress((percent, speed) -> {
+            progressBar.setValue(percent);
+            progressBar.setString(percent + "%");
+            speedLabel.setText(String.format("Speed: %d KB/s", speed/1024));
+        });
+
+        task.setOnStatus(status -> {
+            if ("Paused".equals(status)) {
+                pauseButton.setEnabled(false);
+                resumeButton.setEnabled(true);
+                progressBar.setForeground(new java.awt.Color(243, 156, 18)); // Orange for paused
+            } else if ("Downloading".equals(status)) {
+                pauseButton.setEnabled(true);
+                resumeButton.setEnabled(false);
+                progressBar.setForeground(new java.awt.Color(46, 204, 113)); // Green for active
+            } else if ("Complete".equals(status)) {
+                progressBar.setForeground(new java.awt.Color(46, 204, 113)); // Keep green for complete
+                downloadFrame.dispose();
+                downloadFrames.remove(fileName);
+            } else if ("Error".equals(status) || "Cancelled".equals(status)) {
+                progressBar.setForeground(new java.awt.Color(231, 76, 60)); // Red for error/cancelled
+                downloadFrame.dispose();
+                downloadFrames.remove(fileName);
+            }
+        });
+
+        downloadFrames.put(fileName, downloadFrame);
+    }
+
+    private void initPathConfigFrame() {
+        pathConfigFrame = new javax.swing.JFrame("Download Location Settings");
+        pathConfigFrame.setSize(600, 150);
+        pathConfigFrame.setResizable(false);
+        pathConfigFrame.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        pathConfigFrame.setLocationRelativeTo(this);
+
+        // Main panel with padding
+        javax.swing.JPanel mainPanel = new javax.swing.JPanel();
+        mainPanel.setBorder(javax.swing.BorderFactory.createEmptyBorder(10, 10, 10, 10));
+        mainPanel.setLayout(new java.awt.BorderLayout(5, 10));
+
+        // Path panel
+        javax.swing.JPanel pathPanel = new javax.swing.JPanel(new java.awt.BorderLayout(5, 0));
+        javax.swing.JLabel pathLabel = new javax.swing.JLabel("Default download location:");
+        pathTextField = new javax.swing.JTextField(defaultDownloadPath);
+        pathTextField.setEditable(false);
+        javax.swing.JButton browseButton = new javax.swing.JButton("Browse...");
+
+        pathPanel.add(pathLabel, java.awt.BorderLayout.NORTH);
+        pathPanel.add(pathTextField, java.awt.BorderLayout.CENTER);
+        pathPanel.add(browseButton, java.awt.BorderLayout.EAST);
+
+        // Button panel
+        javax.swing.JPanel buttonPanel = new javax.swing.JPanel(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
+        javax.swing.JButton saveButton = new javax.swing.JButton("Save");
+        javax.swing.JButton cancelButton = new javax.swing.JButton("Cancel");
+
+        buttonPanel.add(saveButton);
+        buttonPanel.add(cancelButton);
+
+        // Add panels to main panel
+        mainPanel.add(pathPanel, java.awt.BorderLayout.CENTER);
+        mainPanel.add(buttonPanel, java.awt.BorderLayout.SOUTH);
+
+        // Add main panel to frame
+        pathConfigFrame.add(mainPanel);
+
+        // Add action listeners
+        browseButton.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser(defaultDownloadPath);
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.setDialogTitle("Choose Default Download Location");
+            if (chooser.showDialog(pathConfigFrame, "Select") == JFileChooser.APPROVE_OPTION) {
+                pathTextField.setText(chooser.getSelectedFile().getAbsolutePath());
+            }
+        });
+
+        saveButton.addActionListener(e -> {
+            defaultDownloadPath = pathTextField.getText();
+            pathConfigFrame.setVisible(false);
+            javax.swing.JOptionPane.showMessageDialog(this,
+                "Download location has been updated.",
+                "Settings Saved",
+                javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        cancelButton.addActionListener(e -> {
+            pathTextField.setText(defaultDownloadPath);
+            pathConfigFrame.setVisible(false);
+        });
+    }
 }
-class DownloadTask {
-    private volatile boolean paused = false;
-    private volatile boolean stopped = false;
-    private long downloadedBytes = 0;
+class DownloadTask extends Thread {
     private final String fileName;
     private final java.io.File saveFile;
-    private final String ipText;
-    private final int port;
+    private final SSLSocket socket;
     private final int tableRow;
     private final javax.swing.table.DefaultTableModel tableModel;
     private final javax.swing.JTextArea jNoficationArea;
+    private volatile boolean running = true;
+    private volatile boolean paused = false;
+    private volatile boolean cancelled = false;
 
-    public DownloadTask(String fileName, java.io.File saveFile, String ipText, int port, int tableRow, javax.swing.table.DefaultTableModel tableModel, javax.swing.JTextArea jNoficationArea) {
+    private java.util.function.BiConsumer<Integer, Integer> onProgress; // Changed to handle speed as int
+    private java.util.function.Consumer<String> onStatus;
+
+    public DownloadTask(String fileName, java.io.File saveFile, SSLSocket socket, int tableRow, 
+                       javax.swing.table.DefaultTableModel tableModel, javax.swing.JTextArea jNoficationArea) {
         this.fileName = fileName;
         this.saveFile = saveFile;
-        this.ipText = ipText;
-        this.port = port;
+        this.socket = socket;
         this.tableRow = tableRow;
         this.tableModel = tableModel;
         this.jNoficationArea = jNoficationArea;
     }
 
-    public void pause() {
-        paused = true;
+    public void setOnProgress(java.util.function.BiConsumer<Integer, Integer> onProgress) {
+        this.onProgress = onProgress;
     }
-    public void resume() {
-        paused = false;
-        synchronized (this) {
-            notify();
+
+    public void setOnStatus(java.util.function.Consumer<String> onStatus) {
+        this.onStatus = onStatus;
+    }
+
+    @Override
+    public void run() {
+        try {
+            updateStatus("Downloading");
+            // Gửi request file
+            java.io.OutputStream out = socket.getOutputStream();
+            out.write(fileName.getBytes());
+            out.flush();
+
+            // Nhận kích thước file
+            java.io.InputStream in = socket.getInputStream();
+            java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(in));
+            long fileSize = Long.parseLong(reader.readLine());
+            
+            // Tạo file output
+            java.io.FileOutputStream fos = new java.io.FileOutputStream(saveFile);
+            
+            // Tải file
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            long totalReceived = 0;
+            long startTime = System.currentTimeMillis();
+            long lastUpdateTime = startTime;
+            long lastBytesReceived = 0;
+
+            while (running && totalReceived < fileSize && (bytesRead = in.read(buffer, 0, (int)Math.min(buffer.length, fileSize - totalReceived))) != -1) {
+                synchronized (this) {
+                    while (paused) {
+                        updateStatus("Paused");
+                        wait();
+                    }
+                    if (cancelled) {
+                        updateStatus("Cancelled");
+                        fos.close();
+                        socket.close();
+                        saveFile.delete();
+                        return;
+                    }
+                }
+                fos.write(buffer, 0, bytesRead);
+                totalReceived += bytesRead;
+                
+                // Calculate progress and speed
+                int percent = (int)((totalReceived * 100) / fileSize);
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastUpdateTime >= 1000) { // Update every second
+                    long timeSpent = currentTime - lastUpdateTime;
+                    long bytesInPeriod = totalReceived - lastBytesReceived;
+                    int speed = (int)(bytesInPeriod * 1000 / timeSpent); // bytes per second
+                    
+                    if (onProgress != null) {
+                        onProgress.accept(percent, speed);
+                    }
+                    updateTable(percent + "% of " + (fileSize/1024) + " KB", speed/1024 + " KB/s");
+                    
+                    lastUpdateTime = currentTime;
+                    lastBytesReceived = totalReceived;
+                }
+            }
+            fos.close();
+            socket.close();
+            
+            if (totalReceived == fileSize) {
+                updateTable("Complete", "100%");
+                updateStatus("Complete");
+                jNoficationArea.append("Downloaded: " + fileName + "\n");
+            } else {
+                updateTable("Incomplete", "Error");
+                updateStatus("Error");
+                throw new Exception("Download incomplete");
+            }
+        } catch (Exception e) {
+            updateTable("Error", e.getMessage());
+            updateStatus("Error");
+            jNoficationArea.append("Download failed: " + fileName + " - " + e.getMessage() + "\n");
+            try {
+                socket.close();
+            } catch (Exception ignored) {}
         }
     }
-    public void stop() {
-        stopped = true;
-        resume();
+
+    private void updateTable(final String status, final String speed) {
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            tableModel.setValueAt(status, tableRow, 2); // Size column
+            tableModel.setValueAt(speed, tableRow, 3);  // Speed column
+        });
     }
 
-    public void download() {
-        new Thread(() -> {
-            try {
-                long fileSize = 0;
-                long startTime = System.currentTimeMillis();
-                long lastTime = startTime;
-                long lastBytes = 0;
-                if (saveFile.exists()) {
-                    downloadedBytes = saveFile.length();
-                } else {
-                    downloadedBytes = 0;
-                }
-                Socket downloadSocket = new Socket(ipText, port);
+    private void updateStatus(final String status) {
+        if (onStatus != null) {
+            onStatus.accept(status);
+        }
+        javax.swing.SwingUtilities.invokeLater(() -> {
+            tableModel.setValueAt(status, tableRow, 4); // Status column
+        });
+    }
 
-                java.io.OutputStream out = downloadSocket.getOutputStream();
-                String request = fileName + "|" + downloadedBytes + "\n";
-                out.write(request.getBytes());
-                out.flush();
+    public synchronized void pauseDownload() {
+        paused = true;
+        updateStatus("Paused");
+    }
 
-                java.io.InputStream in = downloadSocket.getInputStream();
-                java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(in));
-                String sizeLine = reader.readLine();
-                try {
-                    fileSize = Long.parseLong(sizeLine.trim());
-                } catch (Exception ex) {
-                    fileSize = -1;
-                }
+    public synchronized void resumeDownload() {
+        paused = false;
+        notifyAll();
+        updateStatus("Downloading");
+    }
 
-                // Không cập nhật size vào bảng nữa
-
-                java.io.RandomAccessFile raf = new java.io.RandomAccessFile(saveFile, "rw");
-                raf.seek(downloadedBytes);
-
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                long totalRead = downloadedBytes;
-                int lastPercent = (fileSize > 0 && fileSize > downloadedBytes) ? (int)((downloadedBytes * 100) / fileSize) : 0;
-                while (!stopped && (bytesRead = in.read(buffer)) != -1) {
-                    synchronized (this) {
-                        while (paused) {
-                            wait();
-                        }
-                    }
-                    raf.write(buffer, 0, bytesRead);
-                    totalRead += bytesRead;
-                    downloadedBytes = totalRead;
-                    long now = System.currentTimeMillis();
-                    // Cập nhật tiến trình (downloadingprocess)
-                    if (fileSize > 0) {
-                        int percent = (int) ((totalRead * 100) / fileSize);
-                        if (percent != lastPercent) {
-                            lastPercent = percent;
-                            javax.swing.SwingUtilities.invokeLater(() -> {
-                                tableModel.setValueAt(percent + "%", tableRow, 3); // Hiển thị phần trăm ở cột Download Speed
-                            });
-                        }
-                    }
-                    // Cập nhật tốc độ mỗi 0.5s
-                    if (now - lastTime > 500) {
-                        long speed = (totalRead - lastBytes) * 1000 / (now - lastTime); // bytes/sec
-                        lastTime = now;
-                        lastBytes = totalRead;
-                        javax.swing.SwingUtilities.invokeLater(() -> {
-                            tableModel.setValueAt((speed / 1024) + " KB/s", tableRow, 3);
-                        });
-                    }
-                }
-                raf.close();
-                in.close();
-                out.close();
-                downloadSocket.close();
-
-                if (!stopped) {
-                    javax.swing.SwingUtilities.invokeLater(() -> {
-                        tableModel.setValueAt("100%", tableRow, 3);
-                        jNoficationArea.append("Đã tải xong file: " + fileName + "\n");
-                    });
-                } else {
-                    javax.swing.SwingUtilities.invokeLater(() -> {
-                        tableModel.setValueAt("Đã dừng", tableRow, 3);
-                        jNoficationArea.append("Đã dừng tải file: " + fileName + "\n");
-                    });
-                }
-            } catch (Exception ex) {
-                javax.swing.SwingUtilities.invokeLater(() -> {
-                    tableModel.setValueAt("Lỗi", tableRow, 3);
-                    jNoficationArea.append("Lỗi khi tải file: " + fileName + " - " + ex.getMessage() + "\n");
-                });
-            }
-        }).start();
+    public synchronized void cancelDownload() {
+        cancelled = true;
+        paused = false;
+        notifyAll();
+        updateStatus("Cancelled");
     }
 }
