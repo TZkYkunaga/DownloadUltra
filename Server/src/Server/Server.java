@@ -21,13 +21,25 @@ import java.security.KeyStoreException;
  */
 public class Server extends javax.swing.JFrame {
 
+    // Biến instance cho baseDir
+    // Lấy baseDir theo vị trí file class/jar, fallback về user.dir nếu lỗi
+    private final String baseDir;
+    {
+        String tmpDir;
+        try {
+            tmpDir = new java.io.File(Server.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile().getParentFile().getAbsolutePath();
+        } catch (Exception e) {
+            tmpDir = System.getProperty("user.dir");
+        }
+        baseDir = tmpDir;
+    }
+
     /**
      * Creates new form Server
      */
     public Server() {
         initComponents();
-        // Sử dụng đường dẫn tương đối cho assetsDir
-        java.io.File assetsDir = new java.io.File("Server/src/Assets");
+        java.io.File assetsDir = new java.io.File(baseDir, "Server/Assets");
         if (assetsDir.exists() && assetsDir.isDirectory()) {
             String[] files = assetsDir.list();
             if (files != null) {
@@ -202,7 +214,7 @@ public class Server extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void updateAssetList() {
-        java.io.File assetsDir = new java.io.File("Server/src/Assets");
+        java.io.File assetsDir = new java.io.File(baseDir, "Server/Assets");
         String[] files = assetsDir.list();
         javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
         if (files != null) {
@@ -225,7 +237,7 @@ public class Server extends javax.swing.JFrame {
             int port = Integer.parseInt(portText);
 
             // --- TLS/SSL ServerSocket ---
-            String keyStorePath = "Server/src/Server/serverkeystore.jks";
+            String keyStorePath = baseDir + java.io.File.separator + "Server" + java.io.File.separator + "serverkeystore.jks";
             String keyStorePassword = "password"; // đổi nếu bạn dùng password khác
 
             KeyStore ks;
@@ -292,7 +304,7 @@ public class Server extends javax.swing.JFrame {
 
                                 if (len <= 0) {
                                     // Không gửi gì, gửi danh sách file
-                                    java.io.File assetsDir = new java.io.File("Server/src/Assets");
+                                    java.io.File assetsDir = new java.io.File(baseDir, "Server/Assets");
                                     String[] files = assetsDir.list();
                                     StringBuilder sb = new StringBuilder();
                                     if (files != null) {
@@ -307,7 +319,7 @@ public class Server extends javax.swing.JFrame {
                                     String request = new String(buf, 0, len).trim();
                                     String[] parts = request.split("\\|");
                                     String fileName = parts[0];
-                                    java.io.File file = new java.io.File("Server/src/Assets", fileName);
+                                    java.io.File file = new java.io.File(baseDir + java.io.File.separator + "Server/Assets", fileName);
 
                                     if (file.exists()) {
                                         long fileLength = file.length();
@@ -384,7 +396,7 @@ public class Server extends javax.swing.JFrame {
         int result = chooser.showOpenDialog(this);
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
             java.io.File selectedFile = chooser.getSelectedFile();
-            java.io.File destFile = new java.io.File("Server/src/Assets", selectedFile.getName());
+            java.io.File destFile = new java.io.File(baseDir + java.io.File.separator + "Server/Assets", selectedFile.getName());
             try (java.io.FileInputStream fis = new java.io.FileInputStream(selectedFile);
                 java.io.FileOutputStream fos = new java.io.FileOutputStream(destFile)) {
                 byte[] buffer = new byte[4096];
@@ -409,7 +421,7 @@ public class Server extends javax.swing.JFrame {
         }
         int deleted = 0;
         for (String selectedFile : selectedFiles) {
-            java.io.File file = new java.io.File("Server/src/Assets", selectedFile);
+            java.io.File file = new java.io.File(baseDir + java.io.File.separator + "Server/Assets", selectedFile);
             if (file.exists() && file.delete()) {
                 deleted++;
                 jNoficationArea.append("Đã xóa file: " + selectedFile + "\n");
