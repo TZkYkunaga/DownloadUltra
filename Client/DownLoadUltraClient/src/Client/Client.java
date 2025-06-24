@@ -877,22 +877,38 @@ class DownloadTask extends Thread {
 
     @Override
     public void run() {
+        java.io.BufferedOutputStream fileOut = null;
         try {
-            updateStatus("Downloading");
-            // Gửi request file
             java.io.OutputStream out = socket.getOutputStream();
-            out.write(fileName.getBytes());
-            out.flush();
-
-            // Nhận kích thước file
             java.io.InputStream in = socket.getInputStream();
             java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(in));
-            long fileSize = Long.parseLong(reader.readLine());
-            
-            // Tạo file output
-            java.io.FileOutputStream fos = new java.io.FileOutputStream(saveFile);
-            
-            // Tải file
+            fileOut = new java.io.BufferedOutputStream(new java.io.FileOutputStream(saveFile));
+
+            // Gửi yêu cầu file
+            out.write((fileName + "\n").getBytes());
+            out.flush();
+
+            // Đọc dòng đầu tiên: kích thước file
+            String sizeLine = reader.readLine();
+            if (sizeLine == null || sizeLine.trim().isEmpty() || sizeLine.trim().equals("-1")) {
+                updateStatus("Không thể tải file: " + fileName + " (file không tồn tại hoặc server lỗi)");
+                if (onStatus != null) onStatus.accept("Lỗi: file không tồn tại hoặc server lỗi");
+                if (fileOut != null) try { fileOut.close(); } catch (Exception e) {}
+                saveFile.delete();
+                return;
+            }
+            long fileSize;
+            try {
+                fileSize = Long.parseLong(sizeLine.trim());
+                if (fileSize <= 0) throw new NumberFormatException();
+            } catch (NumberFormatException e) {
+                updateStatus("Không thể tải file: " + fileName + " (kích thước file không hợp lệ)");
+                if (onStatus != null) onStatus.accept("Lỗi: kích thước file không hợp lệ");
+                if (fileOut != null) try { fileOut.close(); } catch (Exception ex) {}
+                saveFile.delete();
+                return;
+            }
+            // Tiếp tục nhận dữ liệu file như cũ
             byte[] buffer = new byte[4096];
             int bytesRead;
             long totalReceived = 0;
@@ -908,13 +924,13 @@ class DownloadTask extends Thread {
                     }
                     if (cancelled) {
                         updateStatus("Cancelled");
-                        fos.close();
+                        fileOut.close();
                         socket.close();
                         saveFile.delete();
                         return;
                     }
                 }
-                fos.write(buffer, 0, bytesRead);
+                fileOut.write(buffer, 0, bytesRead);
                 totalReceived += bytesRead;
                 
                 // Calculate progress and speed
@@ -934,7 +950,7 @@ class DownloadTask extends Thread {
                     lastBytesReceived = totalReceived;
                 }
             }
-            fos.close();
+            fileOut.close();
             socket.close();
             
             if (totalReceived == fileSize) {

@@ -322,11 +322,9 @@ public class Server extends javax.swing.JFrame {
                                                 // Nếu lỗi, giữ mặc định start=0, end=fileLength-1
                                             }
                                         }
-
                                         // Gửi kích thước phần sẽ gửi (end - start + 1)
                                         out.write(((end - start + 1) + "\n").getBytes());
                                         out.flush();
-
                                         // Gửi dữ liệu từ byte start đến end
                                         try (java.io.RandomAccessFile raf = new java.io.RandomAccessFile(file, "r")) {
                                             raf.seek(start);
@@ -339,8 +337,12 @@ public class Server extends javax.swing.JFrame {
                                                 bytesToSend -= bytesRead;
                                             }
                                         }
+                                    } else {
+                                        // Gửi -1 nếu file không tồn tại
+                                        out.write("-1\n".getBytes());
+                                        out.flush();
                                     }
-                                    out.flush();
+
                                 }
 
                                 // Giữ kết nối mở để có thể gửi REFRESH về sau
