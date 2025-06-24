@@ -26,7 +26,8 @@ public class Server extends javax.swing.JFrame {
      */
     public Server() {
         initComponents();
-        java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
+        // Sử dụng đường dẫn tương đối cho assetsDir
+        java.io.File assetsDir = new java.io.File("Server/src/Assets");
         if (assetsDir.exists() && assetsDir.isDirectory()) {
             String[] files = assetsDir.list();
             if (files != null) {
@@ -201,16 +202,16 @@ public class Server extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void updateAssetList() {
-    java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
-    String[] files = assetsDir.list();
-    javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
-    if (files != null) {
-        for (String file : files) {
-            model.addElement(file);
+        java.io.File assetsDir = new java.io.File("Server/src/Assets");
+        String[] files = assetsDir.list();
+        javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
+        if (files != null) {
+            for (String file : files) {
+                model.addElement(file);
+            }
         }
+        jItemList.setModel(model);
     }
-    jItemList.setModel(model);
-}
 
     private void jPortFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPortFieldActionPerformed
         // TODO add your handling code here:
@@ -224,7 +225,7 @@ public class Server extends javax.swing.JFrame {
             int port = Integer.parseInt(portText);
 
             // --- TLS/SSL ServerSocket ---
-            String keyStorePath = "c:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Server\\serverkeystore.jks";
+            String keyStorePath = "Server/src/Server/serverkeystore.jks";
             String keyStorePassword = "password"; // đổi nếu bạn dùng password khác
 
             KeyStore ks;
@@ -291,7 +292,7 @@ public class Server extends javax.swing.JFrame {
 
                                 if (len <= 0) {
                                     // Không gửi gì, gửi danh sách file
-                                    java.io.File assetsDir = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets");
+                                    java.io.File assetsDir = new java.io.File("Server/src/Assets");
                                     String[] files = assetsDir.list();
                                     StringBuilder sb = new StringBuilder();
                                     if (files != null) {
@@ -306,7 +307,7 @@ public class Server extends javax.swing.JFrame {
                                     String request = new String(buf, 0, len).trim();
                                     String[] parts = request.split("\\|");
                                     String fileName = parts[0];
-                                    java.io.File file = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", fileName);
+                                    java.io.File file = new java.io.File("Server/src/Assets", fileName);
 
                                     if (file.exists()) {
                                         long fileLength = file.length();
@@ -328,7 +329,7 @@ public class Server extends javax.swing.JFrame {
                                         // Gửi dữ liệu từ byte start đến end
                                         try (java.io.RandomAccessFile raf = new java.io.RandomAccessFile(file, "r")) {
                                             raf.seek(start);
-                                            byte[] buffer = new byte[4096];
+                                            byte[] buffer = new byte[32 * 1024]; // 32KB buffer cho file lớn
                                             long bytesToSend = end - start + 1;
                                             while (bytesToSend > 0) {
                                                 int bytesRead = raf.read(buffer, 0, (int)Math.min(buffer.length, bytesToSend));
@@ -336,6 +337,10 @@ public class Server extends javax.swing.JFrame {
                                                 out.write(buffer, 0, bytesRead);
                                                 bytesToSend -= bytesRead;
                                             }
+                                            out.flush(); // Đảm bảo flush hết dữ liệu
+                                        } catch (Exception ex) {
+                                            // Log lỗi gửi file lớn
+                                            jNoficationArea.append("Lỗi khi gửi file: " + fileName + " - " + ex.getMessage() + "\n");
                                         }
                                     } else {
                                         // Gửi -1 nếu file không tồn tại
@@ -379,7 +384,7 @@ public class Server extends javax.swing.JFrame {
         int result = chooser.showOpenDialog(this);
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
             java.io.File selectedFile = chooser.getSelectedFile();
-            java.io.File destFile = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", selectedFile.getName());
+            java.io.File destFile = new java.io.File("Server/src/Assets", selectedFile.getName());
             try (java.io.FileInputStream fis = new java.io.FileInputStream(selectedFile);
                 java.io.FileOutputStream fos = new java.io.FileOutputStream(destFile)) {
                 byte[] buffer = new byte[4096];
@@ -404,7 +409,7 @@ public class Server extends javax.swing.JFrame {
         }
         int deleted = 0;
         for (String selectedFile : selectedFiles) {
-            java.io.File file = new java.io.File("C:\\Users\\Admin\\Desktop\\DownloadUltraPlus\\DownloadUltra\\Server\\src\\Assets", selectedFile);
+            java.io.File file = new java.io.File("Server/src/Assets", selectedFile);
             if (file.exists() && file.delete()) {
                 deleted++;
                 jNoficationArea.append("Đã xóa file: " + selectedFile + "\n");
