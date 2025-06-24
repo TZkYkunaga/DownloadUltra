@@ -30,6 +30,9 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JFrame pathConfigFrame;
     private javax.swing.JTextField pathTextField;
     
+    private String truststorePath = "";
+    private String truststorePassword = "";
+    
     public Client() {
         initComponents();
         initPathConfigFrame();
@@ -59,7 +62,6 @@ public class Client extends javax.swing.JFrame {
         jClient2ClientButton = new javax.swing.JButton();
         jDisconnectButton = new javax.swing.JButton();
         jConnectButton = new javax.swing.JButton();
-        jPanel3 = new javax.swing.JPanel();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -70,6 +72,7 @@ public class Client extends javax.swing.JFrame {
         editMenu = new javax.swing.JMenu();
         jConnectionMenuItem = new javax.swing.JMenuItem();
         jPathMenuItem = new javax.swing.JMenuItem();
+        jKeyCAMenuItem = new javax.swing.JMenuItem();
         helpMenu = new javax.swing.JMenu();
         contentsMenuItem = new javax.swing.JMenuItem();
         aboutMenuItem = new javax.swing.JMenuItem();
@@ -178,7 +181,7 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        jClient2ClientButton.setLabel("CLient");
+
         jClient2ClientButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jClient2ClientButtonActionPerformed(evt);
@@ -199,8 +202,6 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-        jPanel3.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
-
         jTable1.setAutoCreateRowSorter(true);
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -213,25 +214,9 @@ public class Client extends javax.swing.JFrame {
                 "Date", "Path", "Size", "Download Speed"
             }
         ));
-        jTable1.setNextFocusableComponent(this);
+
         jTable1.setShowGrid(false);
         jScrollPane2.setViewportView(jTable1);
-
-        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
-        jPanel3.setLayout(jPanel3Layout);
-        jPanel3Layout.setHorizontalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane2)
-                .addContainerGap())
-        );
-        jPanel3Layout.setVerticalGroup(
-            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 235, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 8, Short.MAX_VALUE))
-        );
 
         jScrollPane1.setHorizontalScrollBarPolicy(javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         jScrollPane1.setVerticalScrollBarPolicy(javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER);
@@ -283,6 +268,14 @@ public class Client extends javax.swing.JFrame {
         });
         editMenu.add(jPathMenuItem);
 
+        jKeyCAMenuItem.setText("Key CA");
+        jKeyCAMenuItem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jKeyCAMenuItemActionPerformed(evt);
+            }
+        });
+        editMenu.add(jKeyCAMenuItem);
+
         menuBar.add(editMenu);
 
         helpMenu.setMnemonic('h');
@@ -304,13 +297,20 @@ public class Client extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane1)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane3)
-                            .addGroup(layout.createSequentialGroup()
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(jLabel3)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jDownloadButton)
+                        .addGap(19, 19, 19))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jConnectButton)
@@ -318,15 +318,8 @@ public class Client extends javax.swing.JFrame {
                                 .addComponent(jDisconnectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(184, 184, 184)
                                 .addComponent(jClient2ClientButton)
-                                .addGap(0, 25, Short.MAX_VALUE))
-                            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel3)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jDownloadButton)
-                        .addGap(19, 19, 19))))
-            .addComponent(jScrollPane1)
+                                .addGap(0, 25, Short.MAX_VALUE)))
+                        .addContainerGap())))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -344,8 +337,8 @@ public class Client extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 241, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -503,10 +496,6 @@ public class Client extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jToggleButton1ActionPerformed
 
-    private void jToggleButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jToggleButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jToggleButton2ActionPerformed
-
     private void jPathMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jPathMenuItemActionPerformed
         if (pathConfigFrame == null) {
             initPathConfigFrame();
@@ -514,6 +503,62 @@ public class Client extends javax.swing.JFrame {
         pathTextField.setText(defaultDownloadPath);
         pathConfigFrame.setVisible(true);
     }//GEN-LAST:event_jPathMenuItemActionPerformed
+
+    private void jKeyCAMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jKeyCAMenuItemActionPerformed
+        javax.swing.JFrame trustFrame = new javax.swing.JFrame("Cấu hình Truststore");
+        trustFrame.setSize(500, 180);
+        trustFrame.setResizable(false);
+        trustFrame.setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        trustFrame.setLocationRelativeTo(this);
+
+        javax.swing.JPanel panel = new javax.swing.JPanel();
+        panel.setLayout(new java.awt.GridBagLayout());
+        java.awt.GridBagConstraints gbc = new java.awt.GridBagConstraints();
+        gbc.insets = new java.awt.Insets(5, 5, 5, 5);
+        gbc.fill = java.awt.GridBagConstraints.HORIZONTAL;
+
+        // Label và field chọn file
+        gbc.gridx = 0; gbc.gridy = 0;
+        panel.add(new javax.swing.JLabel("Truststore (.jks):"), gbc);
+        gbc.gridx = 1;
+        javax.swing.JTextField pathField = new javax.swing.JTextField(truststorePath, 25);
+        pathField.setEditable(false);
+        panel.add(pathField, gbc);
+        gbc.gridx = 2;
+        javax.swing.JButton browseBtn = new javax.swing.JButton("Browse");
+        panel.add(browseBtn, gbc);
+
+        // Label và field nhập password
+        gbc.gridx = 0; gbc.gridy = 1;
+        panel.add(new javax.swing.JLabel("Password:"), gbc);
+        gbc.gridx = 1;
+        javax.swing.JPasswordField passField = new javax.swing.JPasswordField(truststorePassword, 25);
+        panel.add(passField, gbc);
+
+        // Nút lưu
+        gbc.gridx = 1; gbc.gridy = 2;
+        javax.swing.JButton saveBtn = new javax.swing.JButton("Lưu");
+        panel.add(saveBtn, gbc);
+
+        trustFrame.add(panel);
+
+        browseBtn.addActionListener(e -> {
+            JFileChooser chooser = new JFileChooser();
+            chooser.setFileFilter(new javax.swing.filechooser.FileNameExtensionFilter("Java KeyStore Files (*.jks)", "jks"));
+            if (chooser.showOpenDialog(trustFrame) == JFileChooser.APPROVE_OPTION) {
+                pathField.setText(chooser.getSelectedFile().getAbsolutePath());
+            }
+        });
+
+        saveBtn.addActionListener(e -> {
+            truststorePath = pathField.getText();
+            truststorePassword = new String(passField.getPassword());
+            trustFrame.dispose();
+            javax.swing.JOptionPane.showMessageDialog(this, "Đã lưu cấu hình truststore!", "Thông báo", javax.swing.JOptionPane.INFORMATION_MESSAGE);
+        });
+
+        trustFrame.setVisible(true);
+    }//GEN-LAST:event_jKeyCAMenuItemActionPerformed
 
     // Thêm phương thức xử lý sự kiện cho nút Client2Client
     private void jClient2ClientButtonActionPerformed(java.awt.event.ActionEvent evt) {
@@ -577,13 +622,13 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JButton jDisconnectButton;
     private javax.swing.JButton jDownloadButton;
     private javax.swing.JList<String> jItemList;
+    private javax.swing.JMenuItem jKeyCAMenuItem;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JTextArea jNoficationArea;
     private javax.swing.JPanel jPanel1;
-    private javax.swing.JPanel jPanel3;
     private javax.swing.JMenuItem jPathMenuItem;
     private javax.swing.JTextField jPortField;
     private javax.swing.JFrame jPreferenceFrame;
@@ -596,31 +641,32 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 
-    // Đường dẫn truststore nên để cùng thư mục với file .jar hoặc thư mục chạy chương trình
-    private final String TRUSTSTORE_PATH = System.getProperty("user.dir") + File.separator + "\\Client\\DownLoadUltraClient\\src\\client\\clienttruststore.jks";
-    private final String TRUSTSTORE_PASSWORD = "password";
-
     private SSLSocket createSSLSocket(String ip, int port) throws Exception {
         // Kiểm tra file truststore tồn tại
-        File trustFile = new File(TRUSTSTORE_PATH);
+        File trustFile = new File(truststorePath);
         if (!trustFile.exists()) {
-            jNoficationArea.append("Không tìm thấy file truststore: " + TRUSTSTORE_PATH + "\n");
+            jNoficationArea.append("Không tìm thấy file truststore: " + truststorePath + "\n");
+            throw new Exception("Truststore file not found: " + truststorePath);
         }
+        try {
+            KeyStore ts = KeyStore.getInstance("JKS");
+            try (FileInputStream fis = new FileInputStream(truststorePath)) {
+                ts.load(fis, truststorePassword.toCharArray());
+            }
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
+            tmf.init(ts);
 
-        KeyStore ts = KeyStore.getInstance("JKS");
-        try (FileInputStream fis = new FileInputStream(TRUSTSTORE_PATH)) {
-            ts.load(fis, TRUSTSTORE_PASSWORD.toCharArray());
+            SSLContext ctx = SSLContext.getInstance("TLS");
+            ctx.init(null, tmf.getTrustManagers(), null);
+
+            SSLSocketFactory factory = ctx.getSocketFactory();
+            SSLSocket sslSocket = (SSLSocket) factory.createSocket(ip, port);
+            sslSocket.startHandshake();
+            return sslSocket;
+        } catch (Exception e) {
+            jNoficationArea.append("Error initializing SSL context: " + e.getMessage() + "\n");
+            throw e;
         }
-        TrustManagerFactory tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm());
-        tmf.init(ts);
-
-        SSLContext ctx = SSLContext.getInstance("TLS");
-        ctx.init(null, tmf.getTrustManagers(), null);
-
-        SSLSocketFactory factory = ctx.getSocketFactory();
-        SSLSocket sslSocket = (SSLSocket) factory.createSocket(ip, port);
-        sslSocket.startHandshake();
-        return sslSocket;
     }
 
     private void createDownloadFrame(String fileName, DownloadTask task) {
