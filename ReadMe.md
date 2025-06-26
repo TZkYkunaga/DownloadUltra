@@ -1,3 +1,48 @@
+# DownloadUltraPlus 
+
+This application allows downloading multiple files simultaneously over a secure SSL/TLS connection between Client and Server.
+
+## 1. Setup & Preparation
+
+- Requires Java 8+.
+- Create a keystore for the server (`serverkeystore.jks`) and a truststore for the client (`keytruststore.jks`, password: `password`).
+- **The client's `keytruststore.jks` file should be placed in the `src` folder of the client project.**
+- Make sure the folder `src/Server/Assets` exists to store shared files.
+
+## 2. Start the Server
+
+1. Run `Server.java`.
+2. Enter the port (default 2222) and click **Connect**.
+3. Add files to the shared folder using the **Add** button.
+4. Remove files using the **Remove** button.
+5. View the list of connected clients on the right panel.
+6. Disconnect a client by selecting it and clicking **Disconnect Client**.
+
+## 3. Start the Client
+
+1. Run `Client.java`.
+2. Go to **Edit > Key CA** to select the truststore and enter the password.
+3. Go to **Edit > Saving Path** to choose the download folder.
+4. Go to **Edit > Connection** to enter the server IP and port.
+5. Click **Connect** to retrieve the file list from the server.
+6. Select files to download and click **Download**.
+7. Monitor download progress; you can pause, resume, or cancel each file.
+
+## 4. Notes
+
+- When the server adds/removes files, clients will automatically receive notifications and update the file list.
+- All connections between client and server are encrypted with SSL/TLS.
+- Multiple files can be downloaded at the same time, each in a separate process.
+
+## 5. Workflow
+
+See `workchart.md` for detailed workflow and PlantUML diagram.
+
+---
+
+**Created:** 2025-05-20  
+**Author:** Bùi Hoàng Long
+
 # DownloadUltraPlus
 
 Ứng dụng hỗ trợ tải nhiều file cùng lúc qua kết nối bảo mật SSL/TLS giữa Client và Server.
@@ -42,3 +87,6 @@ Xem file `workchart.md` để biết chi tiết luồng hoạt động và sơ �
 
 **Khởi tạo:** 20/5/2025  
 **Tác giả:** Bùi Hoàng Long
+
+---
+
