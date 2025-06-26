@@ -39,7 +39,7 @@ public class Server extends javax.swing.JFrame {
      */
     public Server() {
         initComponents();
-        java.io.File assetsDir = new java.io.File(baseDir, "Server/Assets");
+        java.io.File assetsDir = new java.io.File(baseDir, "src/Server/Assets");
         if (assetsDir.exists() && assetsDir.isDirectory()) {
             String[] files = assetsDir.list();
             if (files != null) {
@@ -75,6 +75,9 @@ public class Server extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jItemList = new javax.swing.JList<>();
         jRemoveButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        jConnectionList = new javax.swing.JList<>();
+        jDisconnectClientButton = new javax.swing.JButton();
         menuBar = new javax.swing.JMenuBar();
         fileMenu = new javax.swing.JMenu();
         exitMenuItem = new javax.swing.JMenuItem();
@@ -128,6 +131,15 @@ public class Server extends javax.swing.JFrame {
             }
         });
 
+        jScrollPane2.setViewportView(jConnectionList);
+
+        jDisconnectClientButton.setText("Disconnect Client");
+        jDisconnectClientButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jDisconnectClientButtonActionPerformed(evt);
+            }
+        });
+
         fileMenu.setMnemonic('f');
         fileMenu.setText("File");
 
@@ -164,6 +176,19 @@ public class Server extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addGap(14, 14, 14)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane3)
+                                .addGap(31, 31, 31))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel3)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jRemoveButton)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jAddButton)
+                                .addGap(32, 32, 32))))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addContainerGap()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -173,40 +198,37 @@ public class Server extends javax.swing.JFrame {
                                 .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jPortButton)))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGap(14, 14, 14)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane3)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel3)
-                                .addGap(141, 141, 141)
-                                .addComponent(jRemoveButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(jAddButton)))
-                        .addGap(68, 68, 68)))
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 221, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 39, Short.MAX_VALUE)
+                        .addComponent(jDisconnectClientButton)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)))
+                .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 161, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(21, 21, 21)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(16, 16, 16))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 423, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(layout.createSequentialGroup()
-                        .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                            .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jLabel2)
-                            .addComponent(jPortButton))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jScrollPane2)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 423, Short.MAX_VALUE)
+                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel1)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jLabel2)
+                                    .addComponent(jPortButton)))
+                            .addComponent(jDisconnectClientButton))
                         .addGap(70, 70, 70)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                             .addComponent(jLabel3)
                             .addComponent(jRemoveButton)
                             .addComponent(jAddButton))
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGap(10, 10, 10)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(22, 22, 22))
         );
@@ -214,7 +236,7 @@ public class Server extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     private void updateAssetList() {
-        java.io.File assetsDir = new java.io.File(baseDir, "Server/Assets");
+        java.io.File assetsDir = new java.io.File(baseDir, "src/Server/Assets");
         String[] files = assetsDir.list();
         javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
         if (files != null) {
@@ -237,7 +259,7 @@ public class Server extends javax.swing.JFrame {
             int port = Integer.parseInt(portText);
 
             // --- TLS/SSL ServerSocket ---
-            String keyStorePath = baseDir + java.io.File.separator + "Server" + java.io.File.separator + "serverkeystore.jks";
+            String keyStorePath = baseDir + java.io.File.separator + "src" + java.io.File.separator + "Server" + java.io.File.separator + "serverkeystore.jks";
             String keyStorePassword = "password"; // đổi nếu bạn dùng password khác
 
             KeyStore ks;
@@ -284,7 +306,9 @@ public class Server extends javax.swing.JFrame {
                 while (true) {
                     try {
                         Socket clientSocket = serverSocket.accept();
-                        connectedClients.add(clientSocket);
+                        ClientInfo clientInfo = new ClientInfo(clientSocket);
+                        connectedClients.add(clientInfo);
+                        updateConnectionList();
                         String clientIP = clientSocket.getInetAddress().getHostAddress();
                         jNoficationArea.append("Client connected: " + clientIP + "\n");
 
@@ -304,7 +328,7 @@ public class Server extends javax.swing.JFrame {
 
                                 if (len <= 0) {
                                     // Không gửi gì, gửi danh sách file
-                                    java.io.File assetsDir = new java.io.File(baseDir, "Server/Assets");
+                                    java.io.File assetsDir = new java.io.File(baseDir, "src/Server/Assets");
                                     String[] files = assetsDir.list();
                                     StringBuilder sb = new StringBuilder();
                                     if (files != null) {
@@ -319,7 +343,7 @@ public class Server extends javax.swing.JFrame {
                                     String request = new String(buf, 0, len).trim();
                                     String[] parts = request.split("\\|");
                                     String fileName = parts[0];
-                                    java.io.File file = new java.io.File(baseDir + java.io.File.separator + "Server/Assets", fileName);
+                                    java.io.File file = new java.io.File(baseDir + java.io.File.separator + "src/Server/Assets", fileName);
 
                                     if (file.exists()) {
                                         long fileLength = file.length();
@@ -374,7 +398,8 @@ public class Server extends javax.swing.JFrame {
                                 // Xử lý lỗi nếu cần
                             } finally {
                                 try { clientSocket.close(); } catch (Exception ex) {}
-                                connectedClients.remove(clientSocket);
+                                connectedClients.remove(clientInfo);
+                                updateConnectionList();
                             }
                         }).start();
                     } catch (IOException ex) {
@@ -396,7 +421,7 @@ public class Server extends javax.swing.JFrame {
         int result = chooser.showOpenDialog(this);
         if (result == javax.swing.JFileChooser.APPROVE_OPTION) {
             java.io.File selectedFile = chooser.getSelectedFile();
-            java.io.File destFile = new java.io.File(baseDir + java.io.File.separator + "Server/Assets", selectedFile.getName());
+            java.io.File destFile = new java.io.File(baseDir + java.io.File.separator + "src/Server/Assets", selectedFile.getName());
             try (java.io.FileInputStream fis = new java.io.FileInputStream(selectedFile);
                 java.io.FileOutputStream fos = new java.io.FileOutputStream(destFile)) {
                 byte[] buffer = new byte[4096];
@@ -421,7 +446,7 @@ public class Server extends javax.swing.JFrame {
         }
         int deleted = 0;
         for (String selectedFile : selectedFiles) {
-            java.io.File file = new java.io.File(baseDir + java.io.File.separator + "Server/Assets", selectedFile);
+            java.io.File file = new java.io.File(baseDir + java.io.File.separator + "src/Server/Assets", selectedFile);
             if (file.exists() && file.delete()) {
                 deleted++;
                 jNoficationArea.append("Đã xóa file: " + selectedFile + "\n");
@@ -438,6 +463,31 @@ public class Server extends javax.swing.JFrame {
     private void exitMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_exitMenuItemActionPerformed
         System.exit(0);
     }//GEN-LAST:event_exitMenuItemActionPerformed
+
+    private void jDisconnectClientButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDisconnectClientButtonActionPerformed
+        // Ngắt kết nối client được chọn trong danh sách
+        Object selectedObj = jConnectionList.getSelectedValue();
+        if (selectedObj == null) {
+            jNoficationArea.append("Vui lòng chọn client để ngắt kết nối!\n");
+            return;
+        }
+        // Nếu jConnectionList là JList<Object> hoặc raw type, cần ép kiểu về ClientInfo
+        ClientInfo selected;
+        try {
+            selected = (ClientInfo) selectedObj;
+        } catch (Exception e) {
+            jNoficationArea.append("Không thể xác định client!\n");
+            return;
+        }
+        try {
+            selected.socket.close();
+            connectedClients.remove(selected);
+            updateConnectionList();
+            jNoficationArea.append("Đã ngắt kết nối client: " + selected.display + "\n");
+        } catch (Exception e) {
+            jNoficationArea.append("Không thể ngắt kết nối client: " + e.getMessage() + "\n");
+        }
+    }//GEN-LAST:event_jDisconnectClientButtonActionPerformed
 
     /**
      * @param args the command line arguments
@@ -472,6 +522,8 @@ public class Server extends javax.swing.JFrame {
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
     private javax.swing.JButton jAddButton;
+    private javax.swing.JList<String> jConnectionList;
+    private javax.swing.JButton jDisconnectClientButton;
     private javax.swing.JList<String> jItemList;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -481,21 +533,47 @@ public class Server extends javax.swing.JFrame {
     private javax.swing.JTextField jPortField;
     private javax.swing.JButton jRemoveButton;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JMenuBar menuBar;
     // End of variables declaration//GEN-END:variables
 
-    private final CopyOnWriteArrayList<Socket> connectedClients = new CopyOnWriteArrayList<>();
+    // Thêm lớp lưu thông tin client
+    private static class ClientInfo {
+        final Socket socket;
+        final String display;
+        ClientInfo(Socket socket) {
+            this.socket = socket;
+            this.display = socket.getInetAddress().getHostAddress() + ":" + socket.getPort();
+        }
+        @Override
+        public String toString() { return display; }
+    }
 
+    // Thay đổi danh sách lưu client
+    private final CopyOnWriteArrayList<ClientInfo> connectedClients = new CopyOnWriteArrayList<>();
+
+    // Cập nhật danh sách client lên jConnectionList
+    private void updateConnectionList() {
+        // Đảm bảo jConnectionList khai báo là JList<Object> hoặc JList (raw type) để setModel với ClientInfo
+        javax.swing.DefaultListModel<ClientInfo> model = new javax.swing.DefaultListModel<>();
+        for (ClientInfo ci : connectedClients) {
+            model.addElement(ci);
+        }
+        jConnectionList.setModel((javax.swing.ListModel) model); // Ép kiểu về ListModel để tránh lỗi generic
+    }
+
+    // Sửa notifyClientsRefresh cho ClientInfo
     private void notifyClientsRefresh() {
-        for (Socket client : connectedClients) {
+        for (ClientInfo client : connectedClients) {
             try {
-                java.io.OutputStream out = client.getOutputStream();
+                java.io.OutputStream out = client.socket.getOutputStream();
                 out.write("REFRESH\n".getBytes());
                 out.flush();
             } catch (Exception e) {
-                try { client.close(); } catch (Exception ex) {}
+                try { client.socket.close(); } catch (Exception ex) {}
                 connectedClients.remove(client);
+                updateConnectionList();
             }
         }
     }

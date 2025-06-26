@@ -14,6 +14,9 @@ import javax.net.ssl.SSLSocketFactory;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.SSLContext;
 import java.security.KeyStore;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 /**
  *
  * @author Admin
@@ -33,9 +36,23 @@ public class Client extends javax.swing.JFrame {
     private String truststorePath = "";
     private String truststorePassword = "";
     
+    // ExecutorService duy nhất, khởi tạo với 50 thread
+    private ExecutorService downloadExecutor = Executors.newFixedThreadPool(50);
+
     public Client() {
         initComponents();
         initPathConfigFrame();
+        // Đảm bảo thread pool được shutdown khi thoát
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            downloadExecutor.shutdown();
+            try {
+                if (!downloadExecutor.awaitTermination(5, TimeUnit.SECONDS)) {
+                    downloadExecutor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                downloadExecutor.shutdownNow();
+            }
+        }));
     }
 
     /**
@@ -59,8 +76,6 @@ public class Client extends javax.swing.JFrame {
         jScrollPane3 = new javax.swing.JScrollPane();
         jItemList = new javax.swing.JList<>();
         jDownloadButton = new javax.swing.JButton();
-        jClient2ClientButton = new javax.swing.JButton();
-        jDisconnectButton = new javax.swing.JButton();
         jConnectButton = new javax.swing.JButton();
         jScrollPane2 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
@@ -104,7 +119,7 @@ public class Client extends javax.swing.JFrame {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jToggleButton1)
-                .addContainerGap(112, Short.MAX_VALUE))
+                .addContainerGap(101, Short.MAX_VALUE))
         );
 
         jServerIPField.setText("localhost");
@@ -135,11 +150,14 @@ public class Client extends javax.swing.JFrame {
                 .addGroup(jPreferenceFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel4)
                     .addComponent(jLabel2))
-                .addGap(58, 58, 58)
-                .addGroup(jPreferenceFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jServerIPField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(36, Short.MAX_VALUE))
+                .addGroup(jPreferenceFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addGroup(jPreferenceFrameLayout.createSequentialGroup()
+                        .addGap(16, 16, 16)
+                        .addComponent(jPortField, javax.swing.GroupLayout.PREFERRED_SIZE, 119, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPreferenceFrameLayout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jServerIPField)))
+                .addContainerGap(26, Short.MAX_VALUE))
         );
         jPreferenceFrameLayout.setVerticalGroup(
             jPreferenceFrameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -181,20 +199,6 @@ public class Client extends javax.swing.JFrame {
             }
         });
 
-
-        jClient2ClientButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jClient2ClientButtonActionPerformed(evt);
-            }
-        });
-
-        jDisconnectButton.setText("Disconnect");
-        jDisconnectButton.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jDisconnectButtonActionPerformed(evt);
-            }
-        });
-
         jConnectButton.setText("Connect");
         jConnectButton.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -211,10 +215,10 @@ public class Client extends javax.swing.JFrame {
                 {null, null, null, null}
             },
             new String [] {
-                "Date", "Path", "Size", "Download Speed"
+                "Date", "Path", "State", "Download Speed"
             }
         ));
-
+        jTable1.setNextFocusableComponent(this);
         jTable1.setShowGrid(false);
         jScrollPane2.setViewportView(jTable1);
 
@@ -308,17 +312,13 @@ public class Client extends javax.swing.JFrame {
                         .addGap(19, 19, 19))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
                                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 137, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jConnectButton)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jDisconnectButton, javax.swing.GroupLayout.PREFERRED_SIZE, 89, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(184, 184, 184)
-                                .addComponent(jClient2ClientButton)
-                                .addGap(0, 25, Short.MAX_VALUE)))
+                                .addGap(0, 0, Short.MAX_VALUE)))
                         .addContainerGap())))
         );
         layout.setVerticalGroup(
@@ -327,9 +327,7 @@ public class Client extends javax.swing.JFrame {
                 .addGap(8, 8, 8)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jDisconnectButton)
-                    .addComponent(jConnectButton)
-                    .addComponent(jClient2ClientButton))
+                    .addComponent(jConnectButton))
                 .addGap(41, 41, 41)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -342,8 +340,6 @@ public class Client extends javax.swing.JFrame {
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
-
-        jClient2ClientButton.getAccessibleContext().setAccessibleName("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -371,6 +367,7 @@ public class Client extends javax.swing.JFrame {
             String fileList = scanner.hasNext() ? scanner.next() : "";
             scanner.close();
 
+            // Khi nhận danh sách file từ server, chỉ show file thực sự tồn tại (server đã kiểm tra)
             javax.swing.DefaultListModel<String> model = new javax.swing.DefaultListModel<>();
             for (String file : fileList.split("\\r?\\n")) {
                 if (!file.trim().isEmpty()) {
@@ -379,7 +376,7 @@ public class Client extends javax.swing.JFrame {
             }
             jItemList.setModel(model);
 
-            jNoficationArea.append("Đã kết nối thành công!\n");
+            jNoficationArea.append("Đã kết nối thành công! Danh sách file chỉ hiển thị file thực sự tồn tại trên server.\n");
 
             // XÓA chức năng tự động refresh danh sách file mỗi 5 giây
             // if (refreshTimer != null) refreshTimer.stop();
@@ -400,32 +397,14 @@ public class Client extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_jServerIPFieldActionPerformed
 
-    private void jDisconnectButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDisconnectButtonActionPerformed
-        // TODO add your handling code here:
-        if (socket != null && !socket.isClosed()) {
-            try {
-                socket.close();
-                jNoficationArea.append("Disconnected from server.\n");
-            } catch (java.io.IOException ex) {
-                jNoficationArea.append("Error when disconnecting.\n");
-            }
-        } else {
-            jNoficationArea.append("No connection to disconnect.\n");
-        }
-        // XÓA dòng dừng refreshTimer
-        // if (refreshTimer != null) refreshTimer.stop();
-    }//GEN-LAST:event_jDisconnectButtonActionPerformed
     private void jDownloadButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jDownloadButtonActionPerformed
         java.util.List<String> selectedFiles = jItemList.getSelectedValuesList();
         if (selectedFiles == null || selectedFiles.isEmpty()) {
             jNoficationArea.append("Please select file(s) to download.\n");
             return;
         }
-
         File selectedDir = new File(defaultDownloadPath);
         int result = JFileChooser.APPROVE_OPTION;
-        
-        // If default path doesn't exist or user wants to choose another location
         if (!selectedDir.exists() || !selectedDir.isDirectory()) {
             int option = javax.swing.JOptionPane.showConfirmDialog(
                 this,
@@ -433,14 +412,12 @@ public class Client extends javax.swing.JFrame {
                 "Download Location",
                 javax.swing.JOptionPane.YES_NO_OPTION
             );
-            
             if (option == javax.swing.JOptionPane.YES_OPTION) {
                 JFileChooser chooser = new JFileChooser();
                 chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 result = chooser.showSaveDialog(this);
                 if (result == JFileChooser.APPROVE_OPTION) {
                     selectedDir = chooser.getSelectedFile();
-                    // Ask if user wants to make this the new default
                     option = javax.swing.JOptionPane.showConfirmDialog(
                         this,
                         "Do you want to make this the new default download location?",
@@ -458,25 +435,21 @@ public class Client extends javax.swing.JFrame {
                 result = JFileChooser.CANCEL_OPTION;
             }
         }
-
         if (result == JFileChooser.APPROVE_OPTION) {
-  
             String ipText = jServerIPField.getText();
             int port = Integer.parseInt(jPortField.getText());
-
             for (String fileName : selectedFiles) {
                 try {
                     SSLSocket downloadSocket = createSSLSocket(ipText, port);
                     File saveFile = new File(selectedDir, fileName);
-
                     javax.swing.table.DefaultTableModel model = (javax.swing.table.DefaultTableModel) jTable1.getModel();
                     int row = model.getRowCount();
                     String dateStr = new java.text.SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new java.util.Date());
                     model.addRow(new Object[]{dateStr, saveFile.getAbsolutePath(), "0%", "Waiting...", "Waiting"});
-
+                    jNoficationArea.append("[" + dateStr + "] Bắt đầu tải file: " + fileName + "\n");
                     DownloadTask task = new DownloadTask(fileName, saveFile, downloadSocket, row, model, jNoficationArea);
                     createDownloadFrame(fileName, task);
-                    task.start();
+                    downloadExecutor.submit(task); // Sử dụng thread pool thay vì start()
                 } catch (Exception e) {
                     jNoficationArea.append("Error starting download: " + e.getMessage() + "\n");
                 }
@@ -487,7 +460,7 @@ public class Client extends javax.swing.JFrame {
     private void jConnectionMenuItemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jConnectionMenuItemActionPerformed
         // TODO add your handling code here:
         // Hiển thị jFrame2 khi chọn menu Connection
-        jPreferenceFrame.setSize(700, 400); // Đặt kích thước rộng hơn (tùy chỉnh theo ý bạn)
+        jPreferenceFrame.setSize(500, 200); // Đặt kích thước rộng hơn (tùy chỉnh theo ý bạn)
         jPreferenceFrame.setLocationRelativeTo(this);
         jPreferenceFrame.setVisible(true);
     }//GEN-LAST:event_jConnectionMenuItemActionPerformed
@@ -616,10 +589,8 @@ public class Client extends javax.swing.JFrame {
     private javax.swing.JMenuItem exitMenuItem;
     private javax.swing.JMenu fileMenu;
     private javax.swing.JMenu helpMenu;
-    private javax.swing.JButton jClient2ClientButton;
     private javax.swing.JButton jConnectButton;
     private javax.swing.JMenuItem jConnectionMenuItem;
-    private javax.swing.JButton jDisconnectButton;
     private javax.swing.JButton jDownloadButton;
     private javax.swing.JList<String> jItemList;
     private javax.swing.JMenuItem jKeyCAMenuItem;
@@ -843,7 +814,8 @@ public class Client extends javax.swing.JFrame {
         });
     }
 }
-class DownloadTask extends Thread {
+// DownloadTask implements Runnable, có retry
+class DownloadTask implements Runnable {
     private final String fileName;
     private final java.io.File saveFile;
     private final SSLSocket socket;
@@ -853,11 +825,11 @@ class DownloadTask extends Thread {
     private volatile boolean running = true;
     private volatile boolean paused = false;
     private volatile boolean cancelled = false;
-
-    private java.util.function.BiConsumer<Integer, Integer> onProgress; // Changed to handle speed as int
+    private java.util.function.BiConsumer<Integer, Integer> onProgress;
     private java.util.function.Consumer<String> onStatus;
+    private static final int MAX_RETRY = 2;
 
-    public DownloadTask(String fileName, java.io.File saveFile, SSLSocket socket, int tableRow, 
+    public DownloadTask(String fileName, java.io.File saveFile, SSLSocket socket, int tableRow,
                        javax.swing.table.DefaultTableModel tableModel, javax.swing.JTextArea jNoficationArea) {
         this.fileName = fileName;
         this.saveFile = saveFile;
@@ -866,28 +838,42 @@ class DownloadTask extends Thread {
         this.tableModel = tableModel;
         this.jNoficationArea = jNoficationArea;
     }
-
     public void setOnProgress(java.util.function.BiConsumer<Integer, Integer> onProgress) {
         this.onProgress = onProgress;
     }
-
     public void setOnStatus(java.util.function.Consumer<String> onStatus) {
         this.onStatus = onStatus;
     }
-
     @Override
     public void run() {
+        int attempt = 0;
+        while (attempt <= MAX_RETRY) {
+            try {
+                doDownload();
+                return;
+            } catch (Exception e) {
+                attempt++;
+                if (attempt > MAX_RETRY) {
+                    updateTable("Error", e.getMessage());
+                    updateStatus("Error");
+                    jNoficationArea.append("Download failed: " + fileName + " - " + e.getMessage() + "\n");
+                    try { socket.close(); } catch (Exception ignored) {}
+                } else {
+                    jNoficationArea.append("Retry download (" + attempt + "/" + MAX_RETRY + "): " + fileName + "\n");
+                }
+            }
+        }
+    }
+    private void doDownload() throws Exception {
         java.io.BufferedOutputStream fileOut = null;
         try {
             java.io.OutputStream out = socket.getOutputStream();
             java.io.InputStream in = socket.getInputStream();
             java.io.BufferedReader reader = new java.io.BufferedReader(new java.io.InputStreamReader(in));
             fileOut = new java.io.BufferedOutputStream(new java.io.FileOutputStream(saveFile));
-
             // Gửi yêu cầu file
             out.write((fileName + "\n").getBytes());
             out.flush();
-
             // Đọc dòng đầu tiên: kích thước file
             String sizeLine = reader.readLine();
             if (sizeLine == null || sizeLine.trim().isEmpty() || sizeLine.trim().equals("-1")) {
@@ -895,7 +881,7 @@ class DownloadTask extends Thread {
                 if (onStatus != null) onStatus.accept("Lỗi: file không tồn tại hoặc server lỗi");
                 if (fileOut != null) try { fileOut.close(); } catch (Exception e) {}
                 saveFile.delete();
-                return;
+                throw new Exception("File not found or server error");
             }
             long fileSize;
             try {
@@ -906,7 +892,7 @@ class DownloadTask extends Thread {
                 if (onStatus != null) onStatus.accept("Lỗi: kích thước file không hợp lệ");
                 if (fileOut != null) try { fileOut.close(); } catch (Exception ex) {}
                 saveFile.delete();
-                return;
+                throw new Exception("Invalid file size");
             }
             // Tiếp tục nhận dữ liệu file như cũ
             byte[] buffer = new byte[4096];
@@ -915,7 +901,6 @@ class DownloadTask extends Thread {
             long startTime = System.currentTimeMillis();
             long lastUpdateTime = startTime;
             long lastBytesReceived = 0;
-
             while (running && totalReceived < fileSize && (bytesRead = in.read(buffer, 0, (int)Math.min(buffer.length, fileSize - totalReceived))) != -1) {
                 synchronized (this) {
                     while (paused) {
@@ -932,7 +917,6 @@ class DownloadTask extends Thread {
                 }
                 fileOut.write(buffer, 0, bytesRead);
                 totalReceived += bytesRead;
-                
                 // Calculate progress and speed
                 int percent = (int)((totalReceived * 100) / fileSize);
                 long currentTime = System.currentTimeMillis();
@@ -940,19 +924,16 @@ class DownloadTask extends Thread {
                     long timeSpent = currentTime - lastUpdateTime;
                     long bytesInPeriod = totalReceived - lastBytesReceived;
                     int speed = (int)(bytesInPeriod * 1000 / timeSpent); // bytes per second
-                    
                     if (onProgress != null) {
                         onProgress.accept(percent, speed);
                     }
                     updateTable(percent + "% of " + (fileSize/1024) + " KB", speed/1024 + " KB/s");
-                    
                     lastUpdateTime = currentTime;
                     lastBytesReceived = totalReceived;
                 }
             }
             fileOut.close();
             socket.close();
-            
             if (totalReceived == fileSize) {
                 updateTable("Complete", "100%");
                 updateStatus("Complete");
@@ -963,22 +944,17 @@ class DownloadTask extends Thread {
                 throw new Exception("Download incomplete");
             }
         } catch (Exception e) {
-            updateTable("Error", e.getMessage());
-            updateStatus("Error");
-            jNoficationArea.append("Download failed: " + fileName + " - " + e.getMessage() + "\n");
-            try {
-                socket.close();
-            } catch (Exception ignored) {}
+            if (fileOut != null) try { fileOut.close(); } catch (Exception ignore) {}
+            saveFile.delete();
+            throw e;
         }
     }
-
     private void updateTable(final String status, final String speed) {
         javax.swing.SwingUtilities.invokeLater(() -> {
             tableModel.setValueAt(status, tableRow, 2); // Size column
             tableModel.setValueAt(speed, tableRow, 3);  // Speed column
         });
     }
-
     private void updateStatus(final String status) {
         if (onStatus != null) {
             onStatus.accept(status);
@@ -987,18 +963,15 @@ class DownloadTask extends Thread {
             tableModel.setValueAt(status, tableRow, 4); // Status column
         });
     }
-
     public synchronized void pauseDownload() {
         paused = true;
         updateStatus("Paused");
     }
-
     public synchronized void resumeDownload() {
         paused = false;
         notifyAll();
         updateStatus("Downloading");
     }
-
     public synchronized void cancelDownload() {
         cancelled = true;
         paused = false;
